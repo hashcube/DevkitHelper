@@ -1,4 +1,4 @@
-/* History module for Game Closure Devkit
+/* Module for Game Closure Devkit to handle native back button.
  *
  * Authors: Jishnu Mohan <jishnu7@gmail.com>,
  *          Ramprasad rajendran <r.ramprasad@gmail.com>
