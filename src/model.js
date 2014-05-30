@@ -1,11 +1,11 @@
 /* Model module for Devkit
  *
- * Authors: Jishnu Mohan <jishnu7@gmail.com>
+ * Authors: Jishnu Mohan <jishnu7@gmail.com>,
+ *          Debarko De<debarko89@gmail.com>
  *
  * Copyright: 2014, Hashcube (http://hashcube.com)
  *
  */
-
 
 /* global Emitter, _, localStorage */
 
