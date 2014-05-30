@@ -1,4 +1,13 @@
-devkit-helper-module
+# Devkit Helper
 ====================
 
-Helper functions and modules for Game Closure devkit
+Helper modules and functions for Game Closure devkit.
+
+## Modules
+* Model
+* Loading Screen
+* History
+* i18n
+
+## License
+MIT
