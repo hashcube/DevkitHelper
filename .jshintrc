@@ -1,0 +1,29 @@
+{
+  "esnext": false,
+  "strict": true,
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "moz": true,
+  "multistr": false,
+  "noempty": true,
+  "onevar": true,
+  "boss": true,
+  "node": false,
+  "white": true,
+  "indent": 2,
+  "trailing": true,
+  "validthis": true,
+  "maxcomplexity": 15,
+  "maxlen": 80,
+  "maxdepth": 3,
+  "unused": true,
+  "undef": true,
+  "quotmark": "single",
+  "globals": {
+    "Class": true,
+    "merge": true,
+    "bind" : true,
+    "exports": true
+  }
+}
