@@ -7,11 +7,12 @@
  *
  */
 
-/* global _, Callback, console */
+/* global _, Callback, console, device */
 
 /* jshint ignore:start */
 import src.lib.underscore as _;
 import event.Callback as Callback;
+import device;
 /* jshint ignore:end */
 
 exports = (function () {
@@ -90,8 +91,8 @@ exports = (function () {
     log('pop');
   };
 
-  // This function isn't used
-  // But useful if the stack has to be emptied
+  // Function to clear the stck.
+  // Don't use this unless it is necessary.
   history.empty = function () {
     // empty stack
     stack.length = 0;
@@ -109,6 +110,9 @@ exports = (function () {
     busy = false;
     log('resetBusy');
   };
+
+  // set back button handler
+  device.setBackbuttonHandler(history.release);
 
   return history;
 }());
