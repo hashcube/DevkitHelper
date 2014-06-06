@@ -42,7 +42,7 @@ describe('Puzzle', function () {
     it('make sure value is set to the model', function () {
       model.set('key', 2);
       assert.equal(2, model.get('key'));
-      model.set({one: 1, two: 2 });
+      model.set({one: 1, two: 2});
       assert.equal(1, model.get('one'));
       assert.equal(2, model.get('two'));
       assert.equal({key: 2, one: 1, two: 2}.toString(), model.get().toString());
@@ -154,12 +154,12 @@ describe('Puzzle', function () {
     });
   });
 
-  describe('isSet()', function () {
-    it('make sure isSet function is working', function () {
+  describe('has()', function () {
+    it('make sure has function is working', function () {
       model.set('key', 1);
-      assert.equal(true, model.isSet('key'));
+      assert.equal(true, model.has('key'));
       model.unset('key');
-      assert.equal(false, model.isSet('key'));
+      assert.equal(false, model.has('key'));
     });
   });
 

@@ -60,7 +60,7 @@ exports = Class(Emitter, function (supr) {
     return this;
   };
 
-  this.isSet = function (key) {
+  this.has = function (key) {
     return this._attributes[key] !== undefined;
   };
 
