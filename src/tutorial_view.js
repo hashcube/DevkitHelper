@@ -15,7 +15,7 @@ import ui.TextView as TextView;
 import ui.resource.Image as Image;
 import ui.ImageView as ImageView;
 import ui.ImageScaleView as ImageScaleView;
-import src.ui.ButtonView as ButtonView;
+import ui.widget.ButtonView as ButtonView;
 import animate;
 /* jshint ignore:end */
 

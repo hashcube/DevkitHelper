@@ -6,6 +6,7 @@ Helper modules and functions for Game Closure devkit.
 * Model
 * History
 * i18n
+* Tutorial
 
 ## License
 MIT
