@@ -11,3 +11,8 @@ Helper modules and functions for Game Closure devkit.
 
 ## License
 MIT
+
+## Todo
+- [ ] Better documentation, with HOWTOs
+- [ ] Move loading view out of the module
+- [ ] Make tutorial module completely independent
