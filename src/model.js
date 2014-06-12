@@ -147,11 +147,28 @@ exports = Class(Emitter, function (supr) {
     return val;
   };
 
+  // array operations
   this.push = function (key, val) {
     var current = this.get(key);
     current.push(val);
     this.set(key, current);
     return current;
+  };
+
+  this.pop = function (key) {
+    var data = this.get(key),
+      val = data.pop();
+
+    this.set(key, data);
+    return val;
+  };
+
+  this.shift = function (key) {
+    var data = this.get(key),
+      val = data.shift();
+
+    this.set(key, data);
+    return val;
   };
 
   this.clean = function () {
