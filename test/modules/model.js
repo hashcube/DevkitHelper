@@ -141,6 +141,22 @@ describe('Puzzle', function () {
     });
   });
 
+  describe('pop()', function () {
+    it('should remove and return last element from the array', function () {
+      model.set('key', [1, 2, 3]);
+      assert.equal(3, model.pop('key'));
+      assert.notEqual(3, model.get('key')[2]);
+    });
+  });
+
+  describe('shift()', function () {
+    it('should remove and return first element from the array', function () {
+      model.set('key', [1, 2, 3]);
+      assert.equal(1, model.shift('key'));
+      assert.notEqual(1, model.get('key')[0]);
+    });
+  });
+
   describe('save() and load()', function () {
     var data = {id: 1, key: 'test'};
     it('make sure data is saved to localStorage', function () {
