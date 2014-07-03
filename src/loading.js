@@ -9,11 +9,11 @@
 
 /* global console, Image, ImageView, Loader, _, setTimeout */
 /* jshint ignore:start */
-import src.Module.image as Image;
+import ui.resource.Image as Image;
 import ui.ImageView as ImageView;
 import ui.resource.loader as Loader;
 
-import utils.underscore as _;
+import util.underscore as _;
 /* jshint ignore:end */
 
 exports = (function() {
@@ -33,8 +33,8 @@ exports = (function() {
       powerup: 'resources/images/powerup',
       mapselect: 'resources/images/map_select'
     },
-    hourglass = Image.get('menu_screen/loading_hourglass.png'),
-    star = Image.get('menu_screen/loading_starburst.png'),
+    hourglass = new Image({url: 'menu_screen/loading_hourglass.png'}),
+    star = new Image({url: 'menu_screen/loading_starburst.png'}),
 
     // Loading screen elements
     view = new ImageView({
