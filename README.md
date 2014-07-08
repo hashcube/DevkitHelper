@@ -6,7 +6,7 @@ Helper modules and functions for Game Closure devkit.
 * Model
 * History
 * i18n
-* Tutorial
+* [Tutorial](https://medium.com/engineering-hashcube/tutorial-design-and-implementation-for-games-36cd919a000)
 * Loading
 
 ## License
