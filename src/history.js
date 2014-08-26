@@ -112,6 +112,6 @@ exports = (function () {
   };
 
   // set back button handler
-  device.setBackbuttonHandler(history.release);
+  device.setBackButtonHandler(history.release);
   return history;
 }());
