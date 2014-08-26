@@ -112,8 +112,6 @@ exports = (function () {
   };
 
   // set back button handler
-  if (device.name != "browser") {
-    device.setBackbuttonHandler(history.release);
-  }
+  device.setBackbuttonHandler(history.release);
   return history;
 }());
