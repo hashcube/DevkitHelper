@@ -10,7 +10,7 @@
 /* global _, Callback, console, device */
 
 /* jshint ignore:start */
-import src.lib.underscore as _;
+import util.underscore as _;
 import event.Callback as Callback;
 import device;
 /* jshint ignore:end */
@@ -112,7 +112,8 @@ exports = (function () {
   };
 
   // set back button handler
-  device.setBackbuttonHandler(history.release);
-
+  if (device.name != "browser") {
+    device.setBackbuttonHandler(history.release);
+  }
   return history;
 }());
