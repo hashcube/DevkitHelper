@@ -171,7 +171,9 @@ exports = Class(Emitter, function (supr) {
     return val;
   };
 
-  this.clean = function () {
+  this.destroy = function () {
+    this._attributes = {};
+    this._previousAttributes = {};
     this.removeAllListeners();
   };
 
