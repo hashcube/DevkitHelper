@@ -150,6 +150,7 @@ exports = Class(Emitter, function (supr) {
   // array operations
   this.push = function (key, val) {
     var current = this.get(key);
+
     current.push(val);
     this.set(key, current);
     return current;
