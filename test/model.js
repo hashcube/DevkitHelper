@@ -5,7 +5,7 @@
  Model
 */
 
-jsio('import src.model as Model');
+jsio('import model as Model');
 
 //global variable;
 localStorage = (function () {
@@ -28,10 +28,10 @@ var model = new Model(),
   },
   destroy = function () {
     'use strict';
-    model.clean();
+    model.destroy();
   };
 
-describe('Puzzle', function () {
+describe('Model:', function () {
   'use strict';
 
   beforeEach(setup);
@@ -113,7 +113,7 @@ describe('Puzzle', function () {
       model.on('change:key', function () {
         flag = true;
       });
-      model.clean();
+      model.destroy();
       model.set('key', 2);
     });
   });

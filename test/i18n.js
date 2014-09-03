@@ -20,14 +20,14 @@ describe('Localization', function  () {
   before(init);
 
   it('Should return undefined', function () {
-    assert.equal(undefined, l18n());
+    assert.equal(undefined, l10n());
   });
 
   it('Should return score', function () {
-    assert.equal('Score', l18n('score'));
+    assert.equal('Score', l10n('score'));
   });
 
   it('Should return sent data', function () {
-    assert.equal('hello world', l18n('with', ['hello']));
+    assert.equal('hello world', l10n('with', ['hello']));
   });
 });
