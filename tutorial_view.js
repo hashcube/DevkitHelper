@@ -187,7 +187,7 @@ exports = Class(ImageView, function (supr) {
       clickHandler.on('InputSelect', bind(this, function() {
         this.clean();
         var action = opts.action,
-          func = action.function || 'onInputSelect',
+          func = action.func || 'onInputSelect',
           parameters = action.parameters || [];
         action.context[func].apply(action.context, parameters);
         this.emit('next');

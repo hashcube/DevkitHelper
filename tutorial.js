@@ -118,7 +118,7 @@ exports = Class(Emitter, function (supr) {
       pos = opts.positions[id];
 
     if (pos && !this.isCompleted(id)) {
-      var fun = pos.function || 'getPosition',
+      var fun = pos.func || 'getPosition',
         param = pos.parameters || [],
         action = pos.action || null,
         context = pos.context || false,
