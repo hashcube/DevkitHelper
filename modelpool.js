@@ -49,9 +49,6 @@ exports = Class(function () {
       if (model.onRelease) {
         model.onRelease();
       }
-      if (model.destroy) {
-        model.destroy();
-      }
       model._obtainedFromPool = false;
       delete this._obtained[model._index];
       this._models.push(model);

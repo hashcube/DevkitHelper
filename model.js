@@ -172,7 +172,7 @@ exports = Class(Emitter, function (supr) {
     return val;
   };
 
-  this.destroy = function () {
+  this.destroy = this.onRelease = function () {
     this._attributes = {};
     this._previousAttributes = {};
     this.removeAllListeners();
