@@ -22,9 +22,7 @@ exports = function (key, params, language) {
 	try {
     	store = JSON.parse(CACHE['resources/languages/' + language + '.json']);
 	} catch (err) {
-		logger.log("Language " + language + " not in 'resources/languages/' files. Please check.");
-		language = 'en_US';
-		store = JSON.parse(CACHE['resources/languages/en_US.json']);
+		
 	}
 	
     if (store) {
