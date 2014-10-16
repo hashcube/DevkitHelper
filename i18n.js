@@ -18,7 +18,11 @@ exports = function (key, params, language) {
     language = language || GC.app.language || 'en_US';
     params = params || [];
 
-    store = JSON.parse(CACHE['resources/languages/' + language + '.json']);
+    // if language.json doesn't exists fallback to en_US
+    try {
+      store = JSON.parse(CACHE['resources/languages/' + language + '.json']);
+    } catch (err) {
+    }
 
     if (store) {
       string = store[key];
