@@ -18,8 +18,15 @@ exports = function (key, params, language) {
     language = language || GC.app.language || 'en_US';
     params = params || [];
 
-    store = JSON.parse(CACHE['resources/languages/' + language + '.json']);
-
+	// if 'resources/languages/' + language + '.json' doesn't exists fallback to en_US language	
+	try {
+    	store = JSON.parse(CACHE['resources/languages/' + language + '.json']);
+	} catch (err) {
+		logger.log("Language " + language + " not in 'resources/languages/' files. Please check.");
+		language = 'en_US';
+		store = JSON.parse(CACHE['resources/languages/en_US.json']);
+	}
+	
     if (store) {
       string = store[key];
       if (string) {
