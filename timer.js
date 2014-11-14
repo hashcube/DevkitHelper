@@ -25,7 +25,6 @@ exports =new (Class(Emitter, function () {
   this.clear = function () {
     started = false;
     listeners = {};
-    debugger
     this.removeAllListeners();
     clearInterval(_interval);
   };
@@ -53,9 +52,6 @@ exports =new (Class(Emitter, function () {
   this.getListener = function (tag) {
     return listeners[tag];
   }
-
-  this.once = function (listener) {
-  };
 
   this.has = function (tag) {
     return !!listeners[tag];

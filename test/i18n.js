@@ -23,7 +23,6 @@ describe('Localization', function  () {
   before(init);
 
   it('Should return undefined', function () {
-    debugger
     assert.equal(undefined, i18n());
   });
 
