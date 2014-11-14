@@ -8,6 +8,7 @@ Helper modules and functions for Game Closure devkit.
 * i18n
 * [Tutorial](https://medium.com/engineering-hashcube/tutorial-design-and-implementation-for-games-36cd919a000)
 * Loading
+* Timer
 
 ## License
 MIT
