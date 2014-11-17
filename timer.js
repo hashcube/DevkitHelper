@@ -29,19 +29,19 @@ exports =new (Class(Emitter, function () {
     clearInterval(_interval);
   };
 
-  this.unregister = function (listener) {
+  this.unregister = function (tag) {
     // Listener can be a funtion or a string
-    if (listeners[listener]) {
-      delete listeners[listener];
+    if (listeners[tag]) {
+      delete listeners[tag];
     }
   };
 
-  this.register = function (tag, listener, tickInterval) {
+  this.register = function (tag, callback, tickInterval) {
     tickInterval = tickInterval || 10;
-    if(_.isFunction(listener) && !this.has(tag)) {
+    if(_.isFunction(callback) && !this.has(tag)) {
       if (tag) {
         listeners[tag] = {
-          listener: listener,
+          callback: callback,
           _interval: tickInterval,
           _count: 0
         }
@@ -62,7 +62,7 @@ exports =new (Class(Emitter, function () {
       listener._count += 1;
       if(listener._count >= listener._interval) {
         listener._count = 0;
-        listener.listener();
+        listener.callback();
       }
     })
   };

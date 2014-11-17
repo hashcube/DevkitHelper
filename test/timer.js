@@ -83,7 +83,7 @@ describe('Timer', function () {
     after(clear);
     it('should get listener', function (done) {
       timer.register('test', done);
-      timer.getListener('test').listener();
+      timer.getListener('test').callback();
     });
   });
 
