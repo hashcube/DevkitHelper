@@ -13,10 +13,6 @@ exports = (function () {
     listeners = {},
     obj = {};
   obj.start = function (counter) {
-    // you can extend tick by passing a parameter.
-    // counter is in second hence the minimum tick is per second.
-    _.bindAll(this, 'callListeners');
-
     if(!started) {
       started = true;
       counter = counter || 1;
