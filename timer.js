@@ -11,6 +11,7 @@ exports = (function () {
     started = false,
     listeners = {},
     obj = {};
+
   obj.start = function (counter) {
     if(!started) {
       started = true;
