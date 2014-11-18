@@ -10,9 +10,9 @@ exports = (function () {
 
   var interval,
     started = false,
-    listeners = {};
-
-  this.start = function (counter) {
+    listeners = {},
+    obj = {};
+  obj.start = function (counter) {
     // you can extend tick by passing a parameter.
     // counter is in second hence the minimum tick is per second.
     _.bindAll(this, 'callListeners');
@@ -24,20 +24,20 @@ exports = (function () {
     }
   };
 
-  this.clear = function () {
+  obj.clear = function () {
     started = false;
     listeners = {};
     clearInterval(interval);
   };
 
-  this.unregister = function (tag) {
+  obj.unregister = function (tag) {
     // Listener can be a funtion or a string
     if (listeners[tag]) {
       delete listeners[tag];
     }
   };
 
-  this.register = function (ctx, tag, callback, tick_interval, once) {
+  obj.register = function (ctx, tag, callback, tick_interval, once) {
     tick_interval = tick_interval || 1000; // default to 1s
     if (tag) {
       listeners[tag] = {
@@ -50,20 +50,20 @@ exports = (function () {
     }
   };
 
-  this.getListener = function (tag) {
+  obj.getListener = function (tag) {
     return listeners[tag];
   }
 
-  this.has = function (tag) {
+  obj.has = function (tag) {
     return !!listeners[tag];
   };
 
-  this.callListeners = function () {
+  obj.callListeners = function () {
     _.each(listeners, bind(this, function (listener, tag) {
       listener.count += 1;
       if(listener.count >= listener.interval) {
         listener.count = 0;
-        bind(listener.ctx, listener.callback)();
+        listener.callback.apply(listener.ctx);
         if (listener.once) {
           this.unregister(tag);
         }
@@ -71,9 +71,9 @@ exports = (function () {
     }));
   };
 
-  this.once = function (ctx, tag, callback, interval) {
+  obj.once = function (ctx, tag, callback, interval) {
     this.register(ctx, tag, callback, interval, true);
   };
 
-  return this;
+  return obj;
 })();
