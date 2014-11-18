@@ -1,11 +1,14 @@
-/* global */
+/* global Emitter, _*/
+
 /* jshint:ignore start */
 import event.Emitter as Emitter;
 import util.underscore as _;
 /* jshint:ignore end */
 
-exports =new (Class(Emitter, function () {
-  var _interval,
+exports = (function () {
+  'use strict';
+
+  var interval,
     started = false,
     listeners = {};
 
@@ -16,17 +19,15 @@ exports =new (Class(Emitter, function () {
 
     if(!started) {
       started = true;
-      counter = counter || 100;
-      _interval = setInterval(bind(this, this.emit, 'tick'), counter);
+      counter = counter || 1;
+      interval = setInterval(bind(this, this.callListeners), counter);
     }
-    this.on('tick', this.callListeners);
   };
 
   this.clear = function () {
     started = false;
     listeners = {};
-    this.removeAllListeners();
-    clearInterval(_interval);
+    clearInterval(interval);
   };
 
   this.unregister = function (tag) {
@@ -36,15 +37,15 @@ exports =new (Class(Emitter, function () {
     }
   };
 
-  this.register = function (tag, callback, tickInterval) {
-    tickInterval = tickInterval || 10;
-    if(_.isFunction(callback) && !this.has(tag)) {
-      if (tag) {
-        listeners[tag] = {
-          callback: callback,
-          _interval: tickInterval,
-          _count: 0
-        }
+  this.register = function (ctx, tag, callback, tick_interval, once) {
+    tick_interval = tick_interval || 1000; // default to 1s
+    if (tag) {
+      listeners[tag] = {
+        callback: callback,
+        interval: tick_interval,
+        count: 0,
+        once: once,
+        ctx: ctx
       }
     }
   };
@@ -58,12 +59,21 @@ exports =new (Class(Emitter, function () {
   };
 
   this.callListeners = function () {
-    _.each(listeners, function (listener) {
-      listener._count += 1;
-      if(listener._count >= listener._interval) {
-        listener._count = 0;
-        listener.callback();
+    _.each(listeners, bind(this, function (listener, tag) {
+      listener.count += 1;
+      if(listener.count >= listener.interval) {
+        listener.count = 0;
+        bind(listener.ctx, listener.callback)();
+        if (listener.once) {
+          this.unregister(tag);
+        }
       }
-    })
+    }));
   };
-}))();
+
+  this.once = function (ctx, tag, callback, interval) {
+    this.register(ctx, tag, callback, interval, true);
+  };
+
+  return this;
+})();
