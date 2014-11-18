@@ -1,7 +1,6 @@
-/* global Emitter, _*/
+/* global _*/
 
 /* jshint:ignore start */
-import event.Emitter as Emitter;
 import util.underscore as _;
 /* jshint:ignore end */
 
