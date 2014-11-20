@@ -29,7 +29,7 @@ exports = (function () {
   };
 
   obj.unregister = function (tag) {
-    // Listener can be a funtion or a string
+    // Listener can be a function or a string
     if (listeners[tag]) {
       delete listeners[tag];
     }
