@@ -9,7 +9,8 @@ describe('Timer', function () {
 
   var start = function () {
     timer.start();
-  }, clear = function () {
+  },
+  clear = function () {
     timer.clear();
   };
 
