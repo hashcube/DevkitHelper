@@ -113,10 +113,10 @@ describe('Timer', function () {
     });
   });
 
-  describe('once', function (done) {
+  describe('once', function () {
     beforeEach(start);
     afterEach(clear);
-    it('should execute only once', function () {
+    it('should execute only once', function (done) {
       var ct = 0;
 
       timer.once(this, 'test', function () {
@@ -143,10 +143,11 @@ describe('Timer', function () {
           done(exec);
         }, 20);
       });
+
     it('should execute function after start is called', function (done) {
       var exec = 'error not executed';
 
-      timer.register(this, function () {
+      timer.register(this, 'test', function () {
         exec = undefined;
       }, 1);
       timer.pause();

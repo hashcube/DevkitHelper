@@ -17,7 +17,7 @@ exports = (function () {
     if(!started) {
       started = true;
       timer_length = counter || timer_length;
-      interval = setInterval(bind(this, this.callListeners), timer_length);
+      interval = setInterval(obj.callListeners, timer_length);
     }
   };
 
@@ -55,16 +55,16 @@ exports = (function () {
   };
 
   obj.callListeners = function () {
-    _.each(listeners, bind(this, function (listener, tag) {
+    _.each(listeners, function (listener, tag) {
       listener.count += 1;
       if(listener.count >= listener.interval) {
         listener.count = 0;
         listener.callback.apply(listener.ctx);
         if (listener.once) {
-          this.unregister(tag);
+          obj.unregister(tag);
         }
       }
-    }));
+    });
   };
 
   obj.pause = function () {
