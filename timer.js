@@ -1,4 +1,4 @@
-/* global _*/
+/* global _, setInterval, clearInterval*/
 
 /* jshint:ignore start */
 import util.underscore as _;
@@ -10,19 +10,21 @@ exports = (function () {
   var interval,
     started = false,
     listeners = {},
-    obj = {};
+    obj = {},
+    timer_length = 1;
 
   obj.start = function (counter) {
     if(!started) {
       started = true;
-      counter = counter || 1;
-      interval = setInterval(bind(this, this.callListeners), counter);
+      timer_length = counter || timer_length;
+      interval = setInterval(bind(this, this.callListeners), timer_length);
     }
   };
 
   obj.clear = function () {
     started = false;
     listeners = {};
+    timer_length = 1;
     clearInterval(interval);
   };
 
@@ -35,15 +37,13 @@ exports = (function () {
 
   obj.register = function (ctx, tag, callback, tick_interval, once) {
     tick_interval = tick_interval || 1000; // default to 1s
-    if (tag) {
-      listeners[tag] = {
-        callback: callback,
-        interval: tick_interval,
-        count: 0,
-        once: once,
-        ctx: ctx
-      }
-    }
+    listeners[tag] = {
+      callback: callback,
+      interval: tick_interval,
+      count: 0,
+      once: once,
+      ctx: ctx
+    };
   };
 
   obj.getListener = function (tag) {
@@ -65,6 +65,11 @@ exports = (function () {
         }
       }
     }));
+  };
+
+  obj.pause = function () {
+    clearInterval(interval);
+    started = false;
   };
 
   obj.once = function (ctx, tag, callback, interval) {

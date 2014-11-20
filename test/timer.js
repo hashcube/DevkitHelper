@@ -1,9 +1,12 @@
-/* global jsio, it, before, describe, assert, CACHE:true, timer */
+/* global jsio, it, before, describe, assert, timer, after, afterEach,
+  beforeEach, setTimeout */
 
 jsio('import DevkitHelper.timer as timer');
 jsio('import util.underscore as _');
 
 describe('Timer', function () {
+  'use strict';
+
   var start = function () {
     timer.start();
   }, clear = function () {
@@ -57,7 +60,7 @@ describe('Timer', function () {
 
   describe('unregister()', function () {
     before(start);
-    after(clear)
+    after(clear);
     it('should unregister a listener', function () {
       timer.register(this, 'test', function () {});
       timer.unregister('test');
@@ -102,16 +105,16 @@ describe('Timer', function () {
 
       timer.register(this, 'test', function () {
         ct++;
-      }, 1);
+      }, 3);
       setTimeout(function () {
         done(ct > 1 ? undefined: 'time call test failed');
-      }, 3);
+      }, 30);
     });
   });
 
   describe('once', function (done) {
-    before(start);
-    after(clear);
+    beforeEach(start);
+    afterEach(clear);
     it('should execute only once', function () {
       var ct = 0;
 
@@ -120,6 +123,35 @@ describe('Timer', function () {
       }, 1);
       setTimeout(function () {
         done((ct > 1) ? 'error': undefined);
+      }, 20);
+    });
+  });
+
+  describe('pause()', function () {
+    beforeEach(start);
+    afterEach(clear);
+    it('should not execute a registered listener when timer is paused',
+      function (done) {
+        var exec;
+
+        timer.register(this, 'test', function () {
+          exec = 'error: test executed';
+        }, 1);
+        timer.pause();
+        setTimeout(function () {
+          done(exec);
+        }, 20);
+      });
+    it('should execute function after start is called', function (done) {
+      var exec = 'error not executed';
+
+      timer.register(this, function () {
+        exec = undefined;
+      }, 1);
+      timer.pause();
+      timer.start();
+      setTimeout(function() {
+        done(exec);
       }, 20);
     });
   });
