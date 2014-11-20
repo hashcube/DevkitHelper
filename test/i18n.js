@@ -1,6 +1,6 @@
-/* global jsio, it, before, describe, assert, l18n, CACHE:true */
+/* global jsio, it, before, describe, assert, l18n, CACHE:true, GC.app */
 
-jsio('import src.l18n as l18n');
+jsio('import i18n as i18n');
 
 var init = function (done) {
   'use strict';
@@ -11,6 +11,9 @@ var init = function (done) {
       'with': '$1 world'
     })
   };
+  GC.app = {
+    language: 'en_US'
+  }
   done();
 };
 
@@ -20,14 +23,14 @@ describe('Localization', function  () {
   before(init);
 
   it('Should return undefined', function () {
-    assert.equal(undefined, l10n());
+    assert.equal(undefined, i18n());
   });
 
   it('Should return score', function () {
-    assert.equal('Score', l10n('score'));
+    assert.equal('Score', i18n('score'));
   });
 
   it('Should return sent data', function () {
-    assert.equal('hello world', l10n('with', ['hello']));
+    assert.equal('hello world', i18n('with', ['hello']));
   });
 });
