@@ -31,7 +31,7 @@ describe('Timer', function () {
       }, 2);
     });
 
-    it('should start the timer with 200ms as default count', function (done) {
+    it('should start the timer with 100ms as default count', function (done) {
       var ticked;
 
       timer.start(100);
@@ -46,6 +46,19 @@ describe('Timer', function () {
         }
       }, 105);
     });
+
+    it('should make sure callback back is not called before 100ms',
+      function (done) {
+        var ticked;
+
+        timer.start(100);
+        timer.register(this, 'tick', function () {
+          ticked = 'error: called before 100ms';
+        }, 1);
+        setTimeout(function () {
+          done(ticked);
+        }, 99);
+      });
   });
 
   describe('clear()', function () {
