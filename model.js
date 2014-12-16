@@ -81,10 +81,12 @@ exports = Class(Emitter, function (supr) {
     return this._previousAttributes[key];
   };
 
-  this.save = function () {
+  this.save = function (dataset) {
     var id = this.get('id');
-    if (id) {
+    if (id && !dataset) {
       localStorage.setItem(id, JSON.stringify(this.get()));
+    } else if(id){
+      localStorage.setItem(this.get('id'), JSON.stringify(dataset));
     }
     return this;
   };
