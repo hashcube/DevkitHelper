@@ -82,17 +82,21 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.save = function (keys) {
-    var id = this.get('id');
-    if (id && !keys) {
-      localStorage.setItem(id, JSON.stringify(this.get()));
-    } else if(id){
-      var dataset = {};
-      for(var key in keys){
-        dataset[key] = this.get(key);
-      }
-      localStorage.setItem(this.get('id'), JSON.stringify(dataset));
-    }
-    return this;
+    var id = this.get('id'),
+      keys_all = ['columns','rows','id','regeneration','coordinates','grid',
+        'constraints','history','moves','ongoing','score','score_cache','progress',
+        'stars','non_bubbles','current_pop','count_pop','count_hits','count_clear',
+        'count_jelly','count_lock','count_ingredient','ingredient','board_clear',
+        'powerups','spawners','jelly','powerups_pending','spawners_pending',
+        'bought','fire'],
+      key,
+      dataset = {};
+
+    keys = keys? keys : keys_all;
+    for(key in keys){
+      dataset[keys_all[key]] = this.get(keys_all[key]);
+    }  
+    localStorage.setItem(id, JSON.stringify(dataset));
   };
 
   this.load = function (id, silent) {
