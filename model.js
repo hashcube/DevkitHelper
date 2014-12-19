@@ -94,7 +94,7 @@ exports = Class(Emitter, function (supr) {
 
     keys = keys? keys : keys_all;
     for(key in keys){
-      dataset[keys_all[key]] = this.get(keys_all[key]);
+      dataset[keys[key]] = this.get(keys[key]);
     }  
     localStorage.setItem(id, JSON.stringify(dataset));
   };
