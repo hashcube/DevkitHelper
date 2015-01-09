@@ -19,22 +19,22 @@ describe('Timer', function () {
       timer.clear();
     });
 
-    it('should start the timer with 1ms as default count', function (done) {
+    it('should start the timer with 100ms as default count', function (done) {
       var ticked;
 
       timer.start();
       timer.register(this, 'tick', function () {
         ticked = true;
-      }, 1);
+      }, 100);
       setTimeout(function () {
         done(ticked ? undefined: 'error');
-      }, 2);
+      }, 102);
     });
 
-    it('should start the timer with 100ms as default count', function (done) {
+    it('should start the timer with 200ms as default count', function (done) {
       var ticked;
 
-      timer.start(100);
+      timer.start(2);
       timer.register(this, 'tick', function () {
         ticked = true;
       }, 1);
@@ -44,7 +44,7 @@ describe('Timer', function () {
         } else {
           done();
         }
-      }, 105);
+      }, 205);
     });
 
     it('should make sure callback back is not called before 100ms',
@@ -114,15 +114,15 @@ describe('Timer', function () {
   describe('callListener()', function () {
     before(start);
     after(clear);
-    it('should call on a function on 3ms second', function (done) {
+    it('should call on a function on 300ms second', function (done) {
       var ct = 0;
 
       timer.register(this, 'test', function () {
         ct++;
-      }, 3);
+      }, 100);
       setTimeout(function () {
-        done(ct > 1 ? undefined: 'time call test failed');
-      }, 30);
+        done(ct >= 1 ? undefined: 'time call test failed');
+      }, 102);
     });
   });
 
@@ -162,12 +162,12 @@ describe('Timer', function () {
 
       timer.register(this, 'test', function () {
         exec = undefined;
-      }, 1);
+      }, 100);
       timer.pause();
       timer.start();
       setTimeout(function() {
         done(exec);
-      }, 20);
+      }, 200);
     });
   });
 });

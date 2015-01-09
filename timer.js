@@ -11,12 +11,12 @@ exports = (function () {
     started = false,
     listeners = {},
     obj = {},
-    timer_length = 1;
+    timer_length = 100;
 
   obj.start = function (counter) {
     if(!started) {
       started = true;
-      timer_length = counter || timer_length;
+      timer_length = counter ? counter * timer_length: timer_length;
       interval = setInterval(obj.callListeners, timer_length);
     }
   };
@@ -24,7 +24,8 @@ exports = (function () {
   obj.clear = function () {
     started = false;
     listeners = {};
-    timer_length = 1;
+    // default is set to 100 to reduce number of calculations per sec
+    timer_length = 100;
     clearInterval(interval);
   };
 
@@ -36,7 +37,7 @@ exports = (function () {
   };
 
   obj.register = function (ctx, tag, callback, tick_interval, once) {
-    tick_interval = tick_interval || 1000; // default to 1s
+    tick_interval = tick_interval / 100 || 10; // default to 1s
     listeners[tag] = {
       callback: callback,
       interval: tick_interval,
