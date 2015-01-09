@@ -24,6 +24,7 @@ exports = (function () {
   obj.clear = function () {
     started = false;
     listeners = {};
+    // default is set to 100 to reduce number of calculations per sec
     timer_length = 100;
     clearInterval(interval);
   };
