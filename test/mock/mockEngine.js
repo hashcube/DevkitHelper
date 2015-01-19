@@ -14,10 +14,8 @@
  */
 
 exports.setup = function() {
-	//jsio('import devkit');
-	// GC.__init__({ui: false, overlay: false});
-        global.navigator = {language: 'en'};
-        global.NATIVE = {};
+	global.navigator = {language: 'en'};
+	global.NATIVE = {};
 	jsio('import ui.Engine as Application');
 	global.app = new Application();
 
