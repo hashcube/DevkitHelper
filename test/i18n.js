@@ -1,6 +1,6 @@
 /* global jsio, it, before, describe, assert, l18n, CACHE:true, GC.app */
 
-jsio('import i18n as i18n');
+jsio('import DevkitHelper.i18n as i18n');
 
 var init = function (done) {
   'use strict';

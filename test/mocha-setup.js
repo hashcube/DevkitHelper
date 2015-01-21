@@ -21,6 +21,8 @@ global.CONFIG = {
 	shortName: 'tests'
 };
 
+global.GC = {};
+
 require('./mock/mockDevice').setup();
 require('./mock/mockDOM').setup();
 require('./mock/mockJSIO').setup();
