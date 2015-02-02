@@ -43,19 +43,6 @@ describe('Timer', function () {
     });
   });
 
-  describe('has', function () {
-    it('should check if a listener is present', function () {
-      timer.register('test', function() {}, 1);
-      assert.equal(true, !!timer._listeners['test']);
-      timer.pause('test');
-      assert.equal(true, !!timer._listeners['test']);
-      timer.resume('test');
-      assert.equal(true, !!timer._listeners['test']);
-      timer.unregister('test');
-      assert.equal(false, !!timer._listeners['test']);
-    });
-  });
-
   describe('pause()', function () {
     it('should call clearInterval if a listener is active', function (done) {
       var cache = clearInterval;
