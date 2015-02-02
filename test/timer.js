@@ -14,11 +14,11 @@ describe('Timer', function () {
 
   describe('clear()', function () {
 
-    it('should start clear timer', function () {
+    it('should cleal all timers', function () {
       timer.register('test', function () {}, 1);
-      assert.equal(timer.has('test'), true);
+      assert.equal(!!timer._listeners['test'], true);
       timer.clear();
-      assert.equal(timer.has('test'), false);
+      assert.equal(!!timer._listeners['test'], false);
     });
   });
 
@@ -26,7 +26,7 @@ describe('Timer', function () {
     it('should unregister a listener', function () {
       timer.register('test', function () {}, 1);
       timer.unregister('test');
-      assert.equal(false, timer.has('test'));
+      assert.equal(false, !!timer._listeners['test']);
     });
   });
 
@@ -46,13 +46,13 @@ describe('Timer', function () {
   describe('has', function () {
     it('should check if a listener is present', function () {
       timer.register('test', function() {}, 1);
-      assert.equal(true, timer.has('test'));
+      assert.equal(true, !!timer._listeners['test']);
       timer.pause('test');
-      assert.equal(true, timer.has('test'));
+      assert.equal(true, !!timer._listeners['test']);
       timer.resume('test');
-      assert.equal(true, timer.has('test'));
+      assert.equal(true, !!timer._listeners['test']);
       timer.unregister('test');
-      assert.equal(false, timer.has('test'));
+      assert.equal(false, !!timer._listeners['test']);
     });
   });
 

@@ -1,7 +1,9 @@
-/* global _, setInterval, clearInterval*/
+/* global _, setInterval, clearInterval, test*/
 
 /* jshint:ignore start */
 import util.underscore as _;
+import .test as test;
+
 /* jshint:ignore end */
 
 exports = (function () {
@@ -11,22 +13,22 @@ exports = (function () {
     listeners = {},
     obj = {};
 
+
   obj.clear = function () {
-    _.each(listeners, function (listener){
-      clearInterval(listener.timer);
+    _.each(listeners, function (val, tag){
+      obj.unregister(tag);
     });
-    listeners = {};
   };
 
   obj.unregister = function (tag) {
     if (listeners[tag]) {
       clearInterval(listeners[tag].timer);
-      listeners[tag].timer = false;
+      delete listeners[tag];
     }
   };
 
   obj.register = function (tag, callback, tick_interval) {
-    if(!this.has(tag)){
+    if (!listeners[tag] ) {
       listeners[tag] = {
         callback: callback,
         interval: tick_interval,
@@ -35,15 +37,8 @@ exports = (function () {
     }
   };
 
-  obj.has = function (tag) {
-    if(listeners[tag]) {
-      return !!listeners[tag].timer;
-    }
-    return false;
-  };
-
   obj.pause = function (tag) {
-    if(listeners[tag]){
+    if (listeners[tag]) {
       clearInterval(listeners[tag].timer);
     }
   };
@@ -51,10 +46,14 @@ exports = (function () {
   obj.resume = function (tag) {
     var listener = listeners[tag];
 
-    if(listener){
+    if (listener) {
       listener.timer = setInterval(listener.callback, listener.interval);
     }
   };
+
+  test.prepare(obj, {
+    listeners: listeners
+  });
 
   return obj;
 })();
