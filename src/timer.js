@@ -8,73 +8,52 @@ exports = (function () {
   'use strict';
 
   var interval,
-    started = false,
     listeners = {},
-    obj = {},
-    timer_length = 100;
-
-  obj.start = function (counter) {
-    if(!started) {
-      started = true;
-      timer_length = counter ? counter * timer_length: timer_length;
-      interval = setInterval(obj.callListeners, timer_length);
-    }
-  };
+    obj = {};
 
   obj.clear = function () {
-    started = false;
+    _.each(listeners, function (listener){
+      clearInterval(listener.timer);
+    });
     listeners = {};
-    // default is set to 100 to reduce number of calculations per sec
-    timer_length = 100;
-    clearInterval(interval);
   };
 
   obj.unregister = function (tag) {
-    // Listener can be a function or a string
     if (listeners[tag]) {
-      delete listeners[tag];
+      clearInterval(listeners[tag].timer);
+      listeners[tag].timer = false;
     }
   };
 
-  obj.register = function (ctx, tag, callback, tick_interval, once) {
-    tick_interval = tick_interval / 100 || 10; // default to 1s
-    listeners[tag] = {
-      callback: callback,
-      interval: tick_interval,
-      count: 0,
-      once: once,
-      ctx: ctx
-    };
+  obj.register = function (tag, callback, tick_interval) {
+    if(!this.has(tag)){
+      listeners[tag] = {
+        callback: callback,
+        interval: tick_interval,
+        timer: setInterval(callback, tick_interval)
+      };
+    }
   };
-
-  obj.getListener = function (tag) {
-    return listeners[tag];
-  }
 
   obj.has = function (tag) {
-    return !!listeners[tag];
+    if(listeners[tag]) {
+      return !!listeners[tag].timer;
+    }
+    return false;
   };
 
-  obj.callListeners = function () {
-    _.each(listeners, function (listener, tag) {
-      listener.count += 1;
-      if(listener.count >= listener.interval) {
-        listener.count = 0;
-        listener.callback.apply(listener.ctx);
-        if (listener.once) {
-          obj.unregister(tag);
-        }
-      }
-    });
+  obj.pause = function (tag) {
+    if(listeners[tag]){
+      clearInterval(listeners[tag].timer);
+    }
   };
 
-  obj.pause = function () {
-    clearInterval(interval);
-    started = false;
-  };
+  obj.resume = function (tag) {
+    var listener = listeners[tag];
 
-  obj.once = function (ctx, tag, callback, interval) {
-    this.register(ctx, tag, callback, interval, true);
+    if(listener){
+      listener.timer = setInterval(listener.callback, listener.interval);
+    }
   };
 
   return obj;
