@@ -60,12 +60,12 @@ describe('Timer', function () {
     it('should pause if a listener is active', function (done) {
       var cache = setInterval;
 
+      timer.register('test', function () {}, 1);
       setInterval = function () {
         done();
         setInterval = cache;
       }
 
-      timer.register('test', function () {}, 1);
       timer.pause('test');
       timer.resume('test');
     });
