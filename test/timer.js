@@ -52,7 +52,7 @@ describe('Timer', function () {
         clearInterval = cache;
       }
       timer.register('test', function () {}, 1);
-      timer.pause('test');
+      timer.pause(['test']);
     });
   });
 
@@ -67,7 +67,7 @@ describe('Timer', function () {
       }
 
       timer.pause('test');
-      timer.resume('test');
+      timer.resume(['test']);
     });
   });
 });

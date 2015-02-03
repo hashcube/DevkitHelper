@@ -37,18 +37,24 @@ exports = (function () {
     }
   };
 
-  obj.pause = function (tag) {
-    if (listeners[tag]) {
-      clearInterval(listeners[tag].timer);
-    }
+  obj.pause = function (tags) {
+    _.each(tags, function (tag) {
+      if (listeners[tag]) {
+        clearInterval(listeners[tag].timer);
+      }
+    });
   };
 
-  obj.resume = function (tag) {
-    var listener = listeners[tag];
+  obj.resume = function (tags) {
+    var listener;
 
-    if (listener) {
-      listener.timer = setInterval(listener.callback, listener.interval);
-    }
+    _.each(tags, function (tag) {
+      listener = listeners[tag];
+
+     if (listener) {
+        listener.timer = setInterval(listener.callback, listener.interval);
+      }
+    });
   };
 
   test.prepare(obj, {
