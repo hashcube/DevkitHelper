@@ -50,8 +50,7 @@ exports = (function () {
 
     _.each(tags, function (tag) {
       listener = listeners[tag];
-
-     if (listener) {
+      if (listener) {
         listener.timer = setInterval(listener.callback, listener.interval);
       }
     });
