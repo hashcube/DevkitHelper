@@ -55,6 +55,7 @@ exports.setup = function() {
   jsio.__env.name = 'browser';
 
   jsio.path.add(path.join(jsio_path, 'packages'));
+  jsio.path.add('.');
   addModuleToJSIO(devkit_path);
   addModuleToJSIO(path.join(devkit_path, 'modules/timestep'));
   addModuleToJSIO(path.join(__dirname, '../..'));
