@@ -21,19 +21,13 @@ exports = (function () {
   };
 
   obj.unregister = function (tags) {
-    if (_.isArray(tags)) {
-      _.each(tags, function (tag) {
-        if (listeners[tag]) {
-          clearInterval(listeners[tag].timer);
-          delete listeners[tag];
-        }
-      });
-    }
-
-    if (listeners[tags]) {
-        clearInterval(listeners[tags].timer);
-        delete listeners[tags];
-    }
+    tags = _.isArray(tags) ? tags : [tags];
+    _.each(tags, function (tag) {
+      if (listeners[tag]) {
+        clearInterval(listeners[tag].timer);
+        delete listeners[tag];
+      }
+    });
   };
 
   obj.register = function (tag, callback, tick_interval) {
@@ -47,35 +41,24 @@ exports = (function () {
   };
 
   obj.pause = function (tags) {
-    if (_.isArray(tags)) {
-      _.each(tags, function (tag) {
-        if (listeners[tag]) {
-          clearInterval(listeners[tag].timer);
-        }
-      });
-    }
-
-    if (listeners[tags]) {
-        clearInterval(listeners[tags].timer);
-    }
+    tags = _.isArray(tags) ? tags : [tags];
+    _.each(tags, function (tag) {
+      if (listeners[tag]) {
+        clearInterval(listeners[tag].timer);
+      }
+    });
   };
 
   obj.resume = function (tags) {
     var listener;
 
-    if (_.isArray(tags)) {
-      _.each(tags, function (tag) {
-        listener = listeners[tag]
-        if (listener) {
-          listener.timer = setInterval(listener.callback, listener.interval);
-        }
-      });
-    }
-
-    listener = listeners[tags]
-    if (listener) {
+    tags = _.isArray(tags) ? tags : [tags];
+    _.each(tags, function (tag) {
+      listener = listeners[tag];
+      if (listener) {
         listener.timer = setInterval(listener.callback, listener.interval);
-    }
+      }
+    });
   };
 
   test.prepare(obj, {

@@ -16,17 +16,26 @@ describe('Timer', function () {
 
     it('should cleal all timers', function () {
       timer.register('test', function () {}, 1);
-      assert.equal(!!timer._listeners['test'], true);
+      timer.register('test1', function () {}, 1);
+      timer.register('test2', function () {}, 1);
+      assert.strictEqual(3, _.keys(timer._listeners).length);
       timer.clear();
-      assert.equal(!!timer._listeners['test'], false);
+      assert.strictEqual(0, _.keys(timer._listeners).length);
     });
   });
 
   describe('unregister()', function () {
     it('should unregister a listener', function () {
-      timer.register('test', function () {}, 1);
-      timer.unregister('test');
+      var counter = 0,
+        timers = ['test', 'test1', 'test2'];
+
+      _.each(timers, function (test) {
+        timer.register(test, function () {}, 1);
+      });
+      timer.unregister(timers);
       assert.equal(false, !!timer._listeners['test']);
+      assert.equal(false, !!timer._listeners['test1']);
+      assert.equal(false, !!timer._listeners['test2']);
     });
   });
 
@@ -45,29 +54,41 @@ describe('Timer', function () {
 
   describe('pause()', function () {
     it('should call clearInterval if a listener is active', function (done) {
-      var cache = clearInterval;
+      var cache = clearInterval,
+        counter = 0,
+        timers = ['test', 'test1', 'test2'];
 
+      _.each(timers, function (test) {
+        timer.register(test, function () {}, 1);
+      });
       clearInterval = function () {
-        done();
-        clearInterval = cache;
+        if (++counter === 3) {
+          done();
+          clearInterval = cache;
+        }
       }
-      timer.register('test', function () {}, 1);
-      timer.pause(['test']);
+      timer.pause(timers);
     });
   });
 
   describe('resume()', function () {
     it('should pause if a listener is active', function (done) {
-      var cache = setInterval;
+      var cache = setInterval,
+        counter = 0,
+        timers = ['test', 'test1', 'test2'];
 
-      timer.register('test', function () {}, 1);
+      _.each(timers, function (test) {
+        timer.register(test, function () {}, 1);
+      });
       setInterval = function () {
-        done();
-        setInterval = cache;
+        if (++counter === 3) {
+          done();
+          setInterval = cache;
+        }
       }
 
-      timer.pause('test');
-      timer.resume(['test']);
+      timer.pause(timers);
+      timer.resume(timers);
     });
   });
 });
