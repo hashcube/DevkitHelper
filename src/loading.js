@@ -1,7 +1,7 @@
 /* Module for Game Closure Devkit to handle loading screen
  * This module makes use of StackView signals.
  *
- * Authors: Jishnu Mohan <jishnu7@gmail.com>,
+ * Authors: Jishnu Mohan <jishnu7@gmail.com>, Bijosh T J <bijoshtj@gmail.com>
  *
  * Copyright: 2014, Hashcube (http://hashcube.com)
  *
