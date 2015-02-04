@@ -7,13 +7,16 @@
  *
  */
 
-/* global console, Image, ImageView, Loader, _, setTimeout */
+/* global console, Image, ImageView, loader, _, setTimeout */
 /* jshint ignore:start */
 import ui.resource.Image as Image;
 import ui.ImageView as ImageView;
-import ui.resource.loader as Loader;
+import ui.resource.loader as loader;
 
 import util.underscore as _;
+
+import .history as history;
+import .test as test;
 /* jshint ignore:end */
 
 exports = (function() {
@@ -22,71 +25,42 @@ exports = (function() {
   var obj = {},
     debug = false,
     loading = false,
+    initialized = false,
     log = function(msg) {
       if(debug) {
         console.log('loading:', msg);
       }
     },
     // folders to pre-load
-    folders = {
-      puzzle: 'resources/images/puzzle_screen',
-      powerup: 'resources/images/powerup',
-      mapselect: 'resources/images/map_select'
-    },
-    hourglass = new Image({url: 'menu_screen/loading_hourglass.png'}),
-    star = new Image({url: 'menu_screen/loading_starburst.png'}),
+    _folders,
+    _view;
 
-    // Loading screen elements
-    view = new ImageView({
-      x: 0,
-      y: 0,
-      image: 'resources/loading/bg.png',
-      visible: false,
-      inLayout: false,
-      zIndex: 3
-    }),
-    starburst = new ImageView({
-      superview: view,
-      width: star.getWidth(),
-      height: star.getHeight(),
-      layout: 'box',
-      centerY: true,
-      centerX: true,
-      centerAnchor: true,
-      image: star,
-      r: 0
+  obj.initialize = function (view, folders) {
+    _view = view;
+    _folders = folders ? folders : {};
+    initialized = true;
+
+    test.prepare(this, {
+      view: _view,
+      folders: _folders,
+      initialized: initialized
     });
-  new ImageView({
-    superview: view,
-    width: hourglass.getWidth(),
-    height: hourglass.getHeight(),
-    layout: 'box',
-    centerY: true,
-    centerX: true,
-    offsetX: 66,
-    offsetY: 5,
-    image: hourglass,
-    zIndex: 2
-  });
-
-  // star burst animation
-  view.tick = function() {
-    var r = starburst.style.r;
-    // 6.28 = 2 Pi radian
-    starburst.style.r = (r + 0.01) % 6.28;
   };
 
   // method to show loading screen
   obj.show = function(parent, preload, callback) {
-    view.updateOpts({
+    if (!initialized) {
+      return false;
+    }
+    _view.updateOpts({
       superview: parent,
       visible: true
     });
 
-    if(preload && _.has(folders, preload)) {
+    if(preload && _.has(_folders, preload)) {
       log('preload ' + preload);
       loading = true;
-      Loader.preload(folders[preload], function() {
+      loader.preload(_folders[preload], function() {
         loading = false;
       });
     } else {
@@ -104,6 +78,9 @@ exports = (function() {
 
   // No need to call this, unless you want to hide manually.
   obj.hide = function() {
+    if (!initialized) {
+      return false;
+    }
     // if images are still loading, call this function again
     if(loading === true) {
       log('flag is ' + loading);
@@ -112,8 +89,8 @@ exports = (function() {
     }
 
     log('flag is ' + loading);
-    view.removeFromSuperview();
-    view.updateOpts({
+    _view.removeFromSuperview();
+    _view.updateOpts({
       visible: false
     });
   };
