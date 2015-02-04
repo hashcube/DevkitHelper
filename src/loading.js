@@ -25,42 +25,39 @@ exports = (function() {
   var obj = {},
     debug = false,
     loading = false,
-    initialized = false,
     log = function(msg) {
       if(debug) {
         console.log('loading:', msg);
       }
     },
     // folders to pre-load
-    _folders,
-    _view;
+    folders,
+    view;
 
-  obj.initialize = function (view, folders) {
-    _view = view;
-    _folders = folders ? folders : {};
-    initialized = true;
+  obj.initialize = function (view_obj, folders_obj) {
+    view = view_obj;
+    folders = folders_obj ? folders_obj : {};
 
     test.prepare(this, {
-      view: _view,
-      folders: _folders,
-      initialized: initialized
+      view: view,
+      folders: folders
     });
   };
 
   // method to show loading screen
   obj.show = function(parent, preload, callback) {
-    if (!initialized) {
+    if (!view) {
       return false;
     }
-    _view.updateOpts({
+    view.updateOpts({
       superview: parent,
       visible: true
     });
 
-    if(preload && _.has(_folders, preload)) {
+    if(preload && _.has(folders, preload)) {
       log('preload ' + preload);
       loading = true;
-      loader.preload(_folders[preload], function() {
+      loader.preload(folders[preload], function() {
         loading = false;
       });
     } else {
@@ -78,7 +75,7 @@ exports = (function() {
 
   // No need to call this, unless you want to hide manually.
   obj.hide = function() {
-    if (!initialized) {
+    if (!view) {
       return false;
     }
     // if images are still loading, call this function again
@@ -89,8 +86,8 @@ exports = (function() {
     }
 
     log('flag is ' + loading);
-    _view.removeFromSuperview();
-    _view.updateOpts({
+    view.removeFromSuperview();
+    view.updateOpts({
       visible: false
     });
   };

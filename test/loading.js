@@ -23,9 +23,6 @@ describe('Loading', function () {
   beforeEach(init);
 
   describe('initialize()', function () {
-    it('should set initialized flag as true', function () {
-      assert.strictEqual(true, loading._initialized);
-    });
 
     it('should set view as the passed view', function () {
       assert.equal(view, loading._view);
