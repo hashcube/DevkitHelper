@@ -7,7 +7,7 @@
  *
  */
 
-/* global console, Image, ImageView, loader, _, setTimeout */
+/* global console, loader, _, setTimeout, test */
 /* jshint ignore:start */
 import ui.resource.Image as Image;
 import ui.ImageView as ImageView;

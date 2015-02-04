@@ -1,4 +1,5 @@
-/* global jsio, loading */
+/* global jsio, loading, beforeEach, test_util, View,
+  loader */
 
 jsio('import test.lib.util as test_util');
 jsio('import DevkitHelper.loading as loading');
