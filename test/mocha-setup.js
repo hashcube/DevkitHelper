@@ -22,6 +22,7 @@ global.CONFIG = {
 };
 
 global.GC = {};
+process.env.NODE_ENV = 'test';
 
 process.env.NODE_ENV = 'test';
 
