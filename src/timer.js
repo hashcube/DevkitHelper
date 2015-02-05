@@ -15,9 +15,7 @@ exports = (function () {
 
 
   obj.clear = function () {
-    _.each(listeners, function (val, tag){
-      obj.unregister(tag);
-    });
+    obj.unregister(_.keys(listeners));
   };
 
   obj.unregister = function (tags) {
