@@ -5,7 +5,7 @@
  Model
 */
 
-jsio('import model as Model');
+jsio('import DevkitHelper.model as Model');
 
 //global variable;
 localStorage = (function () {

@@ -14,56 +14,51 @@
  */
 
 var fs = require("fs");
+var path = require('path');
 
 var done = false;
 
-function scanAddons() {
-	var path = require('path');
-	var libPath = path.join(__dirname, "../../sdk/addons");
+function addModuleToJSIO(module_path) {
+  var package_file = path.join(module_path, 'package.json'),
+    package_contents = require(package_file),
+    client_paths, current_path, key;
 
-	files = fs.readdirSync(libPath);
+  try {
+    package_contents = require(package_file);
+    client_paths = package_contents.devkit.clientPaths;
+  } catch (e) {
+    console.log(e);
+    return;
+  }
 
-	var paths = [];
-	for (var i = 0; i < files.length; i++) {
-		var load;
-		try {
-			load = require(libPath + "/" + files[i] + "/index").load;
-		} catch (e) {
-			load = false;
-		}
-		if (load) {
-			try {
-				paths = paths.concat(load().paths);
-			} catch (err) {
-				null;
-			}
-		}
-	}
-	return paths;
+  if (client_paths) {
+    for (key in client_paths) {
+      current_path = path.join(module_path, client_paths[key]);
+      if (key !== '*') {
+        jsio.path.add(key, current_path);
+      } else {
+        jsio.path.add(current_path);
+      }
+    }
+  }
 };
 
 exports.setup = function() {
-	if (done) {
-		return;
-	}
+  if (done) {
+    return;
+  }
 
-	var path = require('path');
-	var sdkPath = path.join(__dirname, '../../sdk');
+  var devkit_path = path.join(__dirname, '../../../devkit-core'),
+    jsio_path = path.join(devkit_path, 'node_modules/jsio');
 
-	global.jsio = require(path.join(sdkPath, 'jsio'));
-	jsio.__env.name = 'browser';
+  global.jsio = require(jsio_path);
+  jsio.__env.name = 'browser';
 
-	jsio.path.add(sdkPath);
-	// jsio.path.add(path.join(libPath, './gc-api/api'));
-	jsio.path.add(path.join(sdkPath, 'timestep'));
-	jsio.path.add('.');
+  jsio.path.add(path.join(jsio_path, 'packages'));
+  jsio.path.add('.');
+  addModuleToJSIO(devkit_path);
+  addModuleToJSIO(path.join(devkit_path, 'modules/timestep'));
+  addModuleToJSIO(path.join(__dirname, '../..'));
 
-	var paths = scanAddons();
-	var i = paths.length;
-	while (i) {
-		console.log("Addon path:", paths[--i])
-		jsio.path.add(paths[i]);
-	}
-
-	done = true;
+  done = true;
 };
