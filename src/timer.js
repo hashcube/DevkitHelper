@@ -1,15 +1,14 @@
-/* global _, setInterval, clearInterval, test*/
+/* global _, setInterval, clearInterval, test */
 
-/* jshint:ignore start */
+/* jshint ignore:start */
 import util.underscore as _;
 import .test as test;
-
-/* jshint:ignore end */
+/* jshint ignore:end */
 
 exports = (function () {
   'use strict';
 
-  var interval,
+  var mock = null,
     listeners = {},
     obj = {};
 
@@ -28,12 +27,14 @@ exports = (function () {
     });
   };
 
-  obj.register = function (tag, callback, tick_interval) {
+  obj.register = function (tag, callback, interval) {
+    interval = mock ? mock : interval;
+
     if (!listeners[tag] ) {
       listeners[tag] = {
         callback: callback,
-        interval: tick_interval,
-        timer: setInterval(callback, tick_interval)
+        interval: interval,
+        timer: setInterval(callback, interval)
       };
     }
   };
@@ -57,6 +58,10 @@ exports = (function () {
         listener.timer = setInterval(listener.callback, listener.interval);
       }
     });
+  };
+
+  obj.mock = function (interval) {
+    mock = interval;
   };
 
   test.prepare(obj, {
