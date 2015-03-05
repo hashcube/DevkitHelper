@@ -53,8 +53,7 @@ exports = {
     if (_.isEmpty(data)) {
       data = {};
     }
-
-    data[key](val);
+    data[key] = val;
 
     this.set(key, data);
   },
