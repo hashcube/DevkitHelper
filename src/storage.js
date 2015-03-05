@@ -6,13 +6,14 @@ import util.underscore as _;
 
 exports = {
   // retrieve data from storage
-  get: function (key, obj) {
+  get: function (key) {
     'use strict';
 
     var val = localStorage.getItem(key);
 
-    if (obj !== false) {
-      val = JSON.parse(val || '{}');
+    try {
+      val = JSON.parse(val);
+    } catch (e) {
     }
 
     return val;
@@ -48,6 +49,10 @@ exports = {
     'use strict';
 
     var data = this.get(key);
+
+    if (_.isEmpty(data)) {
+      data = {};
+    }
 
     data[key](val);
 
