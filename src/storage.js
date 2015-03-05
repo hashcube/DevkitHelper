@@ -5,6 +5,7 @@ import util.underscore as _;
 /* jshint ignore: end */
 
 exports = {
+  // retrieve data from storage
   get: function (key, obj) {
     'use strict';
 
@@ -17,6 +18,7 @@ exports = {
     return val;
   },
 
+  // save data to storage
   set: function (key, val) {
     'use strict';
 
@@ -27,6 +29,7 @@ exports = {
     localStorage.setItem(key, val);
   },
 
+  // push value to an array saved in the storage
   push: function (key, val) {
     'use strict';
 
@@ -40,6 +43,7 @@ exports = {
     this.set(key, data);
   },
 
+  // add value to an object saved in the storage
   add: function (key, id, val) {
     'use strict';
 
@@ -48,5 +52,19 @@ exports = {
     data[key](val);
 
     this.set(key, data);
+  },
+
+  // delete data from the storage
+  del: function (id) {
+    'use strict';
+
+    localStorage.removeItem(id);
+  },
+
+  // clean all data from the storage
+  clear: function () {
+    'use strict';
+
+    localStorage.clear();
   }
 };
