@@ -33,7 +33,7 @@ exports = {
   isSet: function (key) {
     'use strict';
 
-    return _.isEmpty(this.get(key));
+    return !_.isEmpty(this.get(key));
   },
 
   // push value to an array saved in the storage
