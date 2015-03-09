@@ -7,8 +7,11 @@ Helper modules and functions for Game Closure devkit.
 * History
 * i18n
 * [Tutorial](https://medium.com/engineering-hashcube/tutorial-design-and-implementation-for-games-36cd919a000)
-* Loading
-* Timer
+* Loading - Show loading screen and automatically hide it when view is ready.
+* Timer - Wrapper around setInterval.
+* Modelpool - Re-use model objects.
+* Test - Expose private functions for unit testing.
+* Storage - Wrapper around HTML5 localStorage.
 
 ## License
 MIT
