@@ -1,3 +1,11 @@
+/* Storage module to handle HTML5 localStorage operations
+ *
+ * Authors: Jishnu Mohan <jishnu7@gmail.com>,
+ *
+ * Copyright: 2014, Hashcube (http://hashcube.com)
+ *
+*/
+
 /* global localStorage, _ */
 
 /* jshint ignore: start */
