@@ -30,6 +30,12 @@ exports = {
     localStorage.setItem(key, val);
   },
 
+  isSet: function (key) {
+    'use strict';
+
+    return _.isEmpty(this.get(key));
+  },
+
   // push value to an array saved in the storage
   push: function (key, val) {
     'use strict';
@@ -53,7 +59,7 @@ exports = {
     if (_.isEmpty(data)) {
       data = {};
     }
-    data[key] = val;
+    data[id] = val;
 
     this.set(key, data);
   },
