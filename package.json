@@ -5,6 +5,10 @@
     "clientPaths": {
       "DevkitHelper": "src"
     }
+  },
+  "devDependencies": {
+    "jsdom": "^3.1.2",
+    "jsio": "^2.0.2",
+    "mocha": "^2.2.1"
   }
 }
-
