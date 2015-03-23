@@ -1,8 +1,10 @@
+/* global require */
 /* @license
  * This file is part of the Game Closure SDK.
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
- * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
+ * it under the terms of the Mozilla Public License v.2.0
+ * as published by Mozilla.
 
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,9 +17,21 @@
 
 var mockContext = require('./mockContext');
 
-exports.Canvas = function() {
-	this.getContext = function() { return new mockContext.Context(this); };
-	this.save = function() { return {}; };
-	this.restore = function() { return {}; };
-	this.attachEvent = function() {};
+exports.Canvas = function () {
+  'use strict';
+
+  this.getContext = function () {
+    return new mockContext.Context(this);
+  };
+
+  this.save = function () {
+    return {};
+  };
+
+  this.restore = function () {
+    return {};
+  };
+
+  this.attachEvent = function () {};
+  this.dispatchEvent = function () {};
 };

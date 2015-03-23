@@ -1,5 +1,5 @@
 /* global jsio, it, before, describe, assert, timer, after, afterEach,
-  beforeEach, setTimeout */
+  beforeEach, setInterval:true, clearInterval:true, _ */
 
 jsio('import DevkitHelper.timer as timer');
 jsio('import util.underscore as _');
@@ -26,16 +26,15 @@ describe('Timer', function () {
 
   describe('unregister()', function () {
     it('should unregister a listener', function () {
-      var counter = 0,
-        timers = ['test', 'test1', 'test2'];
+      var timers = ['test', 'test1', 'test2'];
 
       _.each(timers, function (test) {
         timer.register(test, function () {}, 1);
       });
       timer.unregister(timers);
-      assert.equal(false, !!timer._listeners['test']);
-      assert.equal(false, !!timer._listeners['test1']);
-      assert.equal(false, !!timer._listeners['test2']);
+      assert.equal(false, !!timer._listeners.test);
+      assert.equal(false, !!timer._listeners.test1);
+      assert.equal(false, !!timer._listeners.test2);
     });
   });
 
@@ -46,7 +45,7 @@ describe('Timer', function () {
       setInterval = function () {
         done();
         setInterval = cache;
-      }
+      };
 
       timer.register('test', function () {}, 1);
     });
@@ -66,13 +65,13 @@ describe('Timer', function () {
           done();
           clearInterval = cache;
         }
-      }
+      };
       timer.pause(timers);
     });
   });
 
   describe('resume()', function () {
-    it('should pause if a listener is active', function (done) {
+    it('should resume if a listener is active', function (done) {
       var cache = setInterval,
         counter = 0,
         timers = ['test', 'test1', 'test2'];
@@ -85,10 +84,32 @@ describe('Timer', function () {
           done();
           setInterval = cache;
         }
-      }
+      };
 
       timer.pause(timers);
       timer.resume(timers);
     });
   });
+
+  it('should not create new interval if timer is already running', function () {
+    var id;
+
+    timer.register('test', function () {});
+    id = timer._listeners.test.timer;
+    timer.resume('test');
+    assert.strictEqual(id, timer._listeners.test.timer);
+  });
+
+  it('should not create new interval if timer is already running after pause',
+    function () {
+      var id;
+
+      timer.register('test', function () {});
+      timer.pause('test');
+      timer.resume('test');
+      id = timer._listeners.test.timer;
+      timer.resume('test');
+      assert.strictEqual(id, timer._listeners.test.timer);
+    });
+
 });

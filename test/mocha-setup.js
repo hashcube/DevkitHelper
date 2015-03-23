@@ -24,8 +24,6 @@ global.CONFIG = {
 global.GC = {};
 process.env.NODE_ENV = 'test';
 
-process.env.NODE_ENV = 'test';
-
 require('./mock/mockDevice').setup();
 require('./mock/mockDOM').setup();
 require('./mock/mockJSIO').setup();

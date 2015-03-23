@@ -12,7 +12,6 @@ exports = (function () {
     listeners = {},
     obj = {};
 
-
   obj.clear = function () {
     obj.unregister(_.keys(listeners));
   };
@@ -30,11 +29,12 @@ exports = (function () {
   obj.register = function (tag, callback, interval) {
     interval = mock ? mock : interval;
 
-    if (!listeners[tag] ) {
+    if (!listeners[tag]) {
       listeners[tag] = {
         callback: callback,
         interval: interval,
-        timer: setInterval(callback, interval)
+        timer: setInterval(callback, interval),
+        is_running: true
       };
     }
   };
@@ -42,8 +42,12 @@ exports = (function () {
   obj.pause = function (tags) {
     tags = _.isArray(tags) ? tags : [tags];
     _.each(tags, function (tag) {
-      if (listeners[tag]) {
-        clearInterval(listeners[tag].timer);
+      var listener = listeners[tag];
+
+      // no need to clear interval if timer is not running
+      if (listener && listener.is_running) {
+        clearInterval(listener.timer);
+        listener.is_running = false;
       }
     });
   };
@@ -54,8 +58,9 @@ exports = (function () {
     tags = _.isArray(tags) ? tags : [tags];
     _.each(tags, function (tag) {
       listener = listeners[tag];
-      if (listener) {
+      if (listener && !listener.is_running) {
         listener.timer = setInterval(listener.callback, listener.interval);
+        listener.is_running = true;
       }
     });
   };
