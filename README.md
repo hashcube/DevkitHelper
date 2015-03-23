@@ -20,3 +20,15 @@ MIT
 - [ ] Better documentation, with HOWTOs
 - [ ] Move loading view out of the module
 - [ ] Make tutorial module completely independent
+
+## running tests
+
+`npm install`
+
+then run
+
+`mocha test`
+
+To run test on a single file use
+
+`mocha test/mocha-opts.js yourfile.js`
