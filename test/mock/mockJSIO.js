@@ -23,7 +23,7 @@ var fs = require('fs'),
 function scanModules() {
   'use strict';
 
-  var module_path = path.join(__dirname, '../../modules'),
+  var module_path = path.join(__dirname, '../../_modules'),
     module_dirs = fs.readdirSync(module_path),
     current_dir, current_path;
 
@@ -76,7 +76,7 @@ exports.setup = function () {
   }
 
   var jsio_path = path.join(__dirname,
-    '../../modules/devkit-core/node_modules/jsio');
+    '../../_modules/devkit-core/node_modules/jsio');
 
   global.jsio = require(jsio_path);
   jsio.__env.name = 'browser';

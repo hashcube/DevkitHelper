@@ -26,7 +26,9 @@ MIT
 `npm install mocha jsdom@^3.1.1` if you haven't installed globally
 
 in devkit 2
-`ln -s .. modules`(.. is path to modules folder with devkit-core)
+`ln -s .. _modules`(.. is path to modules folder with devkit-core)
+
+`_modules` to avoid circular dependencies
 
 then run
 
