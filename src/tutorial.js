@@ -21,17 +21,7 @@ exports = Class(Emitter, function (supr) {
   var currentHead = 0,
     tutorials = 0,
     storageID = 'tutorials',
-    cancel = false,
-
-    setCompleted = function (id, type, ms) {
-      var currentData = storage.get(storageID) || [];
-      currentData.push({
-        type: type,
-        id: id,
-        ms: ms
-      });
-      storage.set(storageID, currentData);
-    };
+    cancel = false;
 
   this.init = function (opts) {
     supr(this, 'init', []);
@@ -146,7 +136,11 @@ exports = Class(Emitter, function (supr) {
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
         });
-        setCompleted(id, opts.type, head.ms === false ? 0 : opts.milestone);
+        storage.push(storageID, {
+          type: opts.type,
+          id: id,
+          ms: head.ms === false ? 0 : opts.milestone
+        });
       } else if (opts.loop) {
         this.build(opts);
       }
