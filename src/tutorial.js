@@ -6,16 +6,13 @@
  *
  */
 
-/* global localStorage, setTimeout, clearTimeout, device, Emitter,
- Data, TutorialView
-*/
+/* global setTimeout, clearTimeout, device, Emitter, storage */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 import device;
 
-import tutorial_data as Data;
-import tutorial_view as TutorialView;
+import .storage as storage;
 /* jshint ignore:end */
 
 exports = Class(Emitter, function (supr) {
@@ -26,37 +23,29 @@ exports = Class(Emitter, function (supr) {
     storageID = 'tutorials',
     cancel = false,
 
-    getLocalData = function () {
-      var ls = localStorage.getItem(storageID);
-      return JSON.parse(ls) || [];
-    },
-
-    setLocalData = function (data, key) {
-      localStorage.setItem(storageID + (key || ''), JSON.stringify(data));
-    },
-
     setCompleted = function (id, type, ms) {
-      var currentData = getLocalData();
+      var currentData = storage.get(storageID) || [];
       currentData.push({
         type: type,
         id: id,
         ms: ms
       });
-      setLocalData(currentData);
+      storage.set(storageID, currentData);
     };
 
-  this.init = function () {
+  this.init = function (opts) {
     supr(this, 'init', []);
 
-    var view = this.view = new TutorialView();
-    view.on('next', bind(this, this.show));
+    this.data = opts.data;
   };
 
   this.build = function (opts) {
     currentHead = 0;
     cancel = false;
     this.opts = opts;
-    tutorials = Data[opts.type][opts.milestone] || [];
+    this.view = opts.view;
+    this.view.on('next', bind(this, this.show));
+    tutorials = this.data[opts.type][opts.milestone] || [];
     if (opts.autostart !== false) {
       this.start();
     }
@@ -79,8 +68,8 @@ exports = Class(Emitter, function (supr) {
       len = tut.length;
 
     if (!this.isCompleted(id) && (len === 0 || tut[len - 1].id !== id)) {
-      if (Data[id]) {
-        tut.push.apply(tut, Data[id]);
+      if (this.data[id]) {
+        tut.push.apply(tut, this.data[id]);
       }
       if (force) {
         this.start(true);
@@ -167,7 +156,7 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.isCompleted = function (id) {
-    var data = getLocalData(),
+    var data = storage.get(storageID) || [],
       len = data.length,
       opts = this.opts,
       pos, i;
