@@ -1,5 +1,7 @@
 ```javscript
 
+Initialize tutorial in Application with data
+
 tutorial.build({
   superview: this,
   // screen name - used to get tutorial from data
@@ -10,6 +12,8 @@ tutorial.build({
   timeout: 1000,
   // disable events to this view and sub view when tutorial is visible/processing
   disable: mapView,
+  // View required for the tutorial eg: Lightbox, popup, ribbon etc
+  view: lightBoxView,
   // auto start tutorial
   autostart: false,
   // pass positions if you want to get position from a view.
