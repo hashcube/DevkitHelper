@@ -42,9 +42,12 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.start = function (forceStart) {
+    var time = this.opts.timeout;
+
     if (tutorials.length > 0) {
+
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
-        this.opts.timeout || 1000);
+        time >= 0 ? time : 1000);
     }
   };
 
@@ -131,6 +134,8 @@ exports = Class(Emitter, function (supr) {
           superview: opts.superview,
           x: x,
           y: y,
+          width: pos.width,
+          height: pos.height,
           text: head.text,
           action: action,
           next: (currentHead < length && !head.hideNext),
