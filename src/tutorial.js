@@ -154,10 +154,10 @@ exports = Class(Emitter, function (supr) {
     }
   };
 
-  this.isCompleted = function (id) {
+  this.isCompleted = function (id, params) {
     var data = storage.get(storageID) || [],
       len = data.length,
-      opts = this.opts,
+      opts = this.opts || params,
       pos, i;
 
     for (i = 0; i < len; i++) {
