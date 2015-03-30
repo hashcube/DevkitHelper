@@ -42,12 +42,10 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.start = function (forceStart) {
-    var time = this.opts.timeout;
-
     if (tutorials.length > 0) {
 
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
-        time >= 0 ? time : 1000);
+        this.opts.timeout || 1000);
     }
   };
 
