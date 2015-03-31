@@ -6,13 +6,14 @@
  *
  */
 
-/* global setTimeout, clearTimeout, device, Emitter, storage */
+/* global _, setTimeout, clearTimeout, device, Emitter, storage */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 import device;
 
 import .storage as storage;
+import util.underscore as _;
 /* jshint ignore:end */
 
 exports = Class(Emitter, function (supr) {
@@ -150,6 +151,16 @@ exports = Class(Emitter, function (supr) {
     } else {
       view.emit('next');
     }
+  };
+
+  this.resetTutorial = function (id) {
+    var tutorial_data = storage.get(storageID);
+
+    tutorial_data = _.reject(tutorial_data, function (obj) {
+      return obj.type === id;
+    });
+
+    storage.set(storageID, tutorial_data);
   };
 
   this.isCompleted = function (id, params) {
