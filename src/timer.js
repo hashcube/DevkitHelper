@@ -65,6 +65,10 @@ exports = (function () {
     });
   };
 
+  obj.has = function (tag) {
+    return !!listeners[tag];
+  };
+
   obj.mock = function (interval) {
     mock = interval;
   };

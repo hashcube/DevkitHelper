@@ -70,6 +70,17 @@ describe('Timer', function () {
     });
   });
 
+  describe('has', function () {
+    it('should return true if listener exists', function () {
+      timer.register('test1', function () {});
+      assert.strictEqual(timer.has('test1'), true);
+    });
+
+    it('should return false if listener doesn\'t exist', function () {
+      assert.strictEqual(timer.has('testx'), false);
+    });
+  });
+
   describe('resume()', function () {
     it('should resume if a listener is active', function (done) {
       var cache = setInterval,
