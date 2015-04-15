@@ -49,6 +49,8 @@ exports = (function() {
     if (!view) {
       return false;
     }
+
+    view.emit('loading:show');
     view.updateOpts({
       superview: parent,
       visible: true
@@ -90,6 +92,7 @@ exports = (function() {
     view.updateOpts({
       visible: false
     });
+    view.emit('loading:hide');
   };
 
   return obj;
