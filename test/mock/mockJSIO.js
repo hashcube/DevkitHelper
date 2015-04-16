@@ -45,7 +45,7 @@ function addModuleToJSIO(module_path) {
   'use strict';
 
   var package_file = path.join(module_path, 'package.json'),
-    package_contents = require(package_file),
+    package_contents,
     client_paths, current_path, key;
 
   try {
