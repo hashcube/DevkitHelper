@@ -1,4 +1,4 @@
-/* global _, setInterval, clearInterval, test */
+/* global _, setInterval, clearInterval, setTimeout, test */
 
 /* jshint ignore:start */
 import util.underscore as _;
@@ -67,6 +67,10 @@ exports = (function () {
 
   obj.has = function (tag) {
     return !!listeners[tag];
+  };
+
+  obj.timeout = function (callback, interval) {
+    setTimeout(callback, mock ? mock : interval);
   };
 
   obj.mock = function (interval) {
