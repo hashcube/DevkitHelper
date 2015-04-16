@@ -13,22 +13,6 @@ describe('EventManager', function  () {
 
   beforeEach(init);
 
-  describe('prepare', function () {
-    it('add ../../ to jsio path', function () {
-      var cache = jsio;
-
-      event_manager._setJSIO({
-        path: {
-          add: function (path) {
-            assert.strictEqual(path, '../../');
-          }
-        }
-      });
-      event_manager._setJSIO(cache);
-      event_manager.prepare();
-    });
-  });
-
   describe('register', function () {
     it('import all the plugins', function (done) {
       var cache = jsio;
