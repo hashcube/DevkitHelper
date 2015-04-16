@@ -13,27 +13,32 @@ exports = (function () {
     return str.replace(/\-([a-z])/g, function (split) {
       return split[1].toUpperCase();
     });
-  }, modules = {};
+  }, modules = {},
+  obj = {};
 
-  test.prepare(this, {
-    setJSIO: function (fn) {
-      jsio = fn;
-    },
-    toCamel: toCamel
-  });
-
-  this.register = function (path, plugins) {
+  obj.register = function (path, plugins) {
     this.plugins = plugins;
     plugins.forEach(function (plugin) {
       modules[plugin] = jsio('import ' + path + '.' + plugin + ' as ' + plugin);
     });
   };
 
-  this.emit = function (signal, data) {
+  obj.emit = function (signal, data) {
     this.plugins.forEach(function (plugin) {
-      if (typeof modules[plugin][toCamel(signal)] === 'function') {
-        modules[plugin][toCamel(signal)](data);
+      var fn = modules[plugin][toCamel(signal)];
+
+      if (typeof fn === 'function') {
+        fn(data);
       }
     });
   };
-}());
+
+  test.prepare(obj, {
+    setJSIO: function (fn) {
+      jsio = fn;
+    },
+    toCamel: toCamel
+  });
+
+  return obj;
+})();
