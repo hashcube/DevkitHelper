@@ -7,10 +7,11 @@
  *
  */
 
-/* global Emitter, _, localStorage */
+/* global Emitter, _, localStorage, Callback */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
+import event.Callback as Callback;
 
 import util.underscore as _;
 /* jshint ignore:end */
@@ -23,6 +24,8 @@ exports = Class(Emitter, function (supr) {
 
     this._attributes = {};
     this._previousAttributes = {};
+    this._callbacks = {};
+    this._activeCBs = [];
 
     return this;
   };
@@ -172,10 +175,63 @@ exports = Class(Emitter, function (supr) {
     return val;
   };
 
+  this.chain = function (evnt, func) {
+    var i,
+      cbs = this._callbacks,
+      callback = new Callback(),
+      next = bind(this, function (val) {
+        var cb = this._callbacks[evnt][i] || {
+          fire: bind(this, function () {
+            var current = this._callbacks[evnt],
+              last = current[i];
+
+            if (last) {
+              last.fire();
+              last.clear();
+              current.pop();
+            }
+            this._activeCBs.shift();
+          })
+        };
+
+        func(val, bind(cb, cb.fire, val));
+
+        callback.reset();
+      });
+
+    callback.run(next);
+
+    if (!cbs[evnt]) {
+      cbs[evnt] = [];
+      this.on(evnt, bind(this, function (val) {
+        var len = this._activeCBs.length,
+          pending, last;
+
+        this._activeCBs.push(evnt);
+        if (len === 0) {
+          callback.fire(val);
+        } else {
+          last = this._activeCBs[len - 1];
+          pending = new Callback();
+          pending.run(bind(callback, callback.fire, val));
+          this._callbacks[last].push(pending);
+        }
+      }));
+    }
+    i = cbs[evnt].push(callback);
+  };
+
   this.destroy = this.onRelease = function () {
     this._attributes = {};
     this._previousAttributes = {};
     this.removeAllListeners();
+
+    _.each(this._callbacks, function (evnt) {
+      _.each(evnt, function (cb) {
+        cb.clear();
+      });
+    });
+    this._callbacks = {};
   };
 
 });
