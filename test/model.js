@@ -314,6 +314,35 @@ describe('Model:', function () {
       model.emit('event-1');
       model.emit('event-2');
     });
+
+    it('callback queue should be intact', function (done) {
+      var cb = new Callback(),
+        first, second;
+
+      cb.run(function () {
+        assert.strictEqual(1, model._callbacks['event-1'].length);
+        assert.strictEqual(1, model._callbacks['event-2'].length);
+        done();
+      });
+
+      first = cb.chain();
+      second = cb.chain();
+
+      model.chain('event-1', function (val, cb) {
+        setTimeout(function () {
+          cb();
+          first();
+        }, 100);
+      });
+
+      model.chain('event-2', function (val, cb) {
+        cb();
+        second();
+      });
+
+      model.emit('event-1');
+      model.emit('event-2');
+    });
   });
 
   describe('clone()', function () {

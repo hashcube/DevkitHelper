@@ -188,6 +188,8 @@ exports = Class(Emitter, function (supr) {
             var current = this._callbacks[evnt],
               last = current[i];
 
+            // if we are chaining a second signal, that mapping cb will be added
+            // to the end of current event's queue, which becomes i'th value.
             if (last) {
               last.fire(cancel);
               last.clear();
