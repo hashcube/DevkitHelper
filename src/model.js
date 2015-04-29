@@ -181,9 +181,9 @@ exports = Class(Emitter, function (supr) {
       callback = new Callback(),
       next = bind(this, function (val, cancel) {
         var cb = this._callbacks[evnt][i] || {
-          // i is the at the end of the queue,
-          // we need to call pending callbacks from next event.
+          // i is poiting to the end of the queue, so creating custom cb object.
           fire: bind(this, function (val, cancel) {
+            // call pending callbacks from the next event.
 
             var current = this._callbacks[evnt],
               last = current[i];
@@ -191,6 +191,8 @@ exports = Class(Emitter, function (supr) {
             if (last) {
               last.fire(cancel);
               last.clear();
+              // this is to remove the last cb which is just a mapping
+              // between event queues.
               current.pop();
             }
             // remove current event
@@ -199,7 +201,7 @@ exports = Class(Emitter, function (supr) {
         };
 
         // execution of next function in the queue can be aborted
-        // by passing true as a paramter to cb.
+        // by passing true as a paramter to the cb.
         if (cancel) {
           // even if we want to cancel, we need to fire so that
           // we can reset all the callbacks
@@ -229,7 +231,7 @@ exports = Class(Emitter, function (supr) {
         // this is needed for multi signal chaining
         this._activeCBs.push(evnt);
         if (len === 0) {
-          // there is no active function, fire cb immedietly.
+          // if there is no active function, fire cb immedietly.
           callback.fire(val);
         } else {
           // some other execution is ongoing, add to the queue.
