@@ -181,7 +181,10 @@ exports = Class(Emitter, function (supr) {
       callback = new Callback(),
       next = bind(this, function (val, cancel) {
         var cb = this._callbacks[evnt][i] || {
+          // i is the at the end of the queue,
+          // we need to call pending callbacks from next event.
           fire: bind(this, function (val, cancel) {
+
             var current = this._callbacks[evnt],
               last = current[i];
 
@@ -190,14 +193,23 @@ exports = Class(Emitter, function (supr) {
               last.clear();
               current.pop();
             }
+            // remove current event
             this._activeCBs.shift();
           })
         };
 
-        if (!cancel) {
-          func(val, bind(cb, cb.fire, val));
-        } else {
+        // execution of next function in the queue can be aborted
+        // by passing true as a paramter to cb.
+        if (cancel) {
+          // even if we want to cancel, we need to fire so that
+          // we can reset all the callbacks
           cb.fire(val, cancel);
+        } else {
+          // call the registered callback function with value and
+          // fire function.
+          // binding val to fire so that next function in the chain will also
+          // get the value.
+          func(val, bind(cb, cb.fire, val));
         }
 
         callback.reset();
@@ -206,18 +218,25 @@ exports = Class(Emitter, function (supr) {
     callback.run(next);
 
     if (!cbs[evnt]) {
+      // we need to register only once, remaining will be taken care
+      // by the next function.
       cbs[evnt] = [];
       this.on(evnt, bind(this, function (val) {
         var len = this._activeCBs.length,
           pending, last;
 
+        // add to queue.
+        // this is needed for multi signal chaining
         this._activeCBs.push(evnt);
         if (len === 0) {
+          // there is no active function, fire cb immedietly.
           callback.fire(val);
         } else {
+          // some other execution is ongoing, add to the queue.
           last = this._activeCBs[len - 1];
           pending = new Callback();
           pending.run(bind(callback, callback.fire, val));
+          // add to the end of last event's queue
           this._callbacks[last].push(pending);
         }
       }));
