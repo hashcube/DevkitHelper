@@ -179,14 +179,14 @@ exports = Class(Emitter, function (supr) {
     var i,
       cbs = this._callbacks,
       callback = new Callback(),
-      next = bind(this, function (val) {
+      next = bind(this, function (val, cancel) {
         var cb = this._callbacks[evnt][i] || {
-          fire: bind(this, function () {
+          fire: bind(this, function (val, cancel) {
             var current = this._callbacks[evnt],
               last = current[i];
 
             if (last) {
-              last.fire();
+              last.fire(cancel);
               last.clear();
               current.pop();
             }
@@ -194,7 +194,11 @@ exports = Class(Emitter, function (supr) {
           })
         };
 
-        func(val, bind(cb, cb.fire, val));
+        if (!cancel) {
+          func(val, bind(cb, cb.fire, val));
+        } else {
+          cb.fire(val, cancel);
+        }
 
         callback.reset();
       });
