@@ -36,7 +36,10 @@ exports = Class(Emitter, function (supr) {
     this.opts = opts;
     this.view = opts.view;
     this.view.on('next', bind(this, this.show));
-    tutorials = this.data[opts.type][opts.milestone] || [];
+    tutorials = [];
+    if (opts.type) {
+      tutorials = this.data[opts.type][opts.milestone] || [];
+    }
     if (opts.autostart !== false) {
       this.start();
     }
@@ -55,21 +58,25 @@ exports = Class(Emitter, function (supr) {
     clearTimeout(this.timeoutID);
   };
 
-  this.add = function (id, force) {
+  this.add = function (id, force, cb) {
     var tut = tutorials,
-      len = tut.length;
+      len = tut.length,
+      data;
 
     if (!this.isCompleted(id) && (len === 0 || tut[len - 1].id !== id)) {
-      if (this.data[id]) {
-        tut.push.apply(tut, this.data[id]);
+      data = this.data[id];
+
+      if (data) {
+        _.last(data).cb = cb;
+        tut.push.apply(tut, data);
+
+        if (force) {
+          this.start(true);
+        }
+        return true;
       }
-      if (force) {
-        this.start(true);
-      }
-      return true;
-    } else {
-      return false;
     }
+    return false;
   };
 
   this.launch = function (forceStart) {
@@ -91,9 +98,19 @@ exports = Class(Emitter, function (supr) {
     }
 
     if (currentHead >= length) {
-      view.finish(disable, opts.finish);
+      view.finish(disable, function () {
+        var last = tutorials[currentHead - 1];
+
+        if (last.cb) {
+          last.cb();
+        }
+        if (opts.finish) {
+          opts.finish();
+        }
+      });
       return;
     }
+
     var head = tutorials[currentHead++],
       id = head.id,
       pos = opts.positions[id];

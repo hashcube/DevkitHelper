@@ -7,10 +7,11 @@
  *
  */
 
-/* global Emitter, _, localStorage */
+/* global Emitter, _, localStorage, Callback */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
+import event.Callback as Callback;
 
 import util.underscore as _;
 /* jshint ignore:end */
@@ -23,6 +24,8 @@ exports = Class(Emitter, function (supr) {
 
     this._attributes = {};
     this._previousAttributes = {};
+    this._callbacks = {};
+    this._activeCBs = [];
 
     return this;
   };
@@ -172,10 +175,90 @@ exports = Class(Emitter, function (supr) {
     return val;
   };
 
+  this.chain = function (evnt, func) {
+    var i,
+      cbs = this._callbacks,
+      callback = new Callback(),
+      next = bind(this, function (val, cancel) {
+        var cb = this._callbacks[evnt][i] || {
+          // i is poiting to the end of the queue, so creating custom cb object.
+          fire: bind(this, function (val, cancel) {
+            // call pending callbacks from the next event.
+
+            var current = this._callbacks[evnt],
+              last = current[i];
+
+            // if we are chaining a second signal, that mapping cb will be added
+            // to the end of current event's queue, which becomes i'th value.
+            if (last) {
+              last.fire(cancel);
+              last.clear();
+              // this is to remove the last cb which is just a mapping
+              // between event queues.
+              current.pop();
+            }
+            // remove current event
+            this._activeCBs.shift();
+          })
+        };
+
+        // execution of next function in the queue can be aborted
+        // by passing true as a paramter to the cb.
+        if (cancel) {
+          // even if we want to cancel, we need to fire so that
+          // we can reset all the callbacks
+          cb.fire(val, cancel);
+        } else {
+          // call the registered callback function with value and
+          // fire function.
+          // binding val to fire so that next function in the chain will also
+          // get the value.
+          func(val, bind(cb, cb.fire, val));
+        }
+
+        callback.reset();
+      });
+
+    callback.run(next);
+
+    if (!cbs[evnt]) {
+      // we need to register only once, remaining will be taken care
+      // by the next function.
+      cbs[evnt] = [];
+      this.on(evnt, bind(this, function (val) {
+        var len = this._activeCBs.length,
+          pending, last;
+
+        // add to queue.
+        // this is needed for multi signal chaining
+        this._activeCBs.push(evnt);
+        if (len === 0) {
+          // if there is no active function, fire cb immedietly.
+          callback.fire(val);
+        } else {
+          // some other execution is ongoing, add to the queue.
+          last = this._activeCBs[len - 1];
+          pending = new Callback();
+          pending.run(bind(callback, callback.fire, val));
+          // add to the end of last event's queue
+          this._callbacks[last].push(pending);
+        }
+      }));
+    }
+    i = cbs[evnt].push(callback);
+  };
+
   this.destroy = this.onRelease = function () {
     this._attributes = {};
     this._previousAttributes = {};
     this.removeAllListeners();
+
+    _.each(this._callbacks, function (evnt) {
+      _.each(evnt, function (cb) {
+        cb.clear();
+      });
+    });
+    this._callbacks = {};
   };
 
 });

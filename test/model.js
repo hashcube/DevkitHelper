@@ -2,10 +2,11 @@
  localStorage:true, setTimeout,
  jsio, assert, describe,
  beforeEach, afterEach, it,
- Model
+ Model, Callback
 */
 
 jsio('import DevkitHelper.model as Model');
+jsio('import event.Callback as Callback');
 
 //global variable;
 localStorage = (function () {
@@ -176,6 +177,171 @@ describe('Model:', function () {
       assert.equal(true, model.has('key'));
       model.unset('key');
       assert.equal(false, model.has('key'));
+    });
+  });
+
+  describe('chain()', function () {
+    it('should call the subscriber', function (done) {
+      model.chain('event-name', done);
+      model.emit('event-name');
+    });
+
+    it('should work for multiple emits', function (done) {
+      var count = 0,
+        cb = new Callback(),
+        fns = [cb.chain(), cb.chain()];
+
+      cb.run(function () {
+        done(count === 2 ? undefined : 'error');
+      });
+
+      model.chain('event-name', function (val, cb) {
+        fns[count++]();
+        cb();
+      });
+      model.emit('event-name');
+      model.emit('event-name');
+    });
+
+    it('should call all the subscribers', function (done) {
+      var cb = new Callback(),
+        first, second;
+
+      cb.run(function () {
+        done();
+      });
+
+      first = cb.chain();
+      second = cb.chain();
+      model.chain('event-name', function (val, cb) {
+        first();
+        cb();
+      });
+      model.chain('event-name', function (val, cb) {
+        second();
+        cb();
+      });
+
+      model.emit('event-name');
+    });
+
+    it('should not call second untill first one calls cb', function (done) {
+      var flag = true;
+
+      model.chain('event-name', function () {
+        setTimeout(function () {
+          done(flag ? undefined : 'error');
+        }, 30);
+      });
+
+      model.chain('event-name', function () {
+        flag = false;
+        done('error');
+      });
+
+      model.emit('event-name');
+    });
+
+    it('should not call second if cb is called with true', function (done) {
+      var flag = true;
+
+      model.chain('event-name', function (val, cb) {
+        setTimeout(function () {
+          done(flag ? undefined : 'error');
+        }, 30);
+        cb(true);
+      });
+
+      model.chain('event-name', function () {
+        flag = false;
+        done('error');
+      });
+
+      model.emit('event-name');
+    });
+
+    it('should queue multiple events', function (done) {
+      var a = 0,
+        cb = new Callback(),
+        first, second;
+
+      cb.run(function () {
+        done();
+      });
+
+      first = cb.chain();
+      second = cb.chain();
+
+      model.chain('event-1', function (val, cb) {
+        if (a !== 0) {
+          done('error');
+        } else {
+          a = 1;
+          first();
+        }
+        cb();
+      });
+
+      model.chain('event-2', function (val, cb) {
+        if (a !== 1) {
+          done('error');
+        } else {
+          a = 2;
+          second();
+        }
+        cb();
+      });
+
+      model.emit('event-1');
+      model.emit('event-2');
+    });
+
+    it('should not call second event untill first event queue is complete',
+      function (done) {
+      var flag = true;
+
+      model.chain('event-1', function () {
+        setTimeout(function () {
+          done(flag ? undefined : 'error');
+        }, 30);
+      });
+
+      model.chain('event-2', function () {
+        flag = false;
+        done('error');
+      });
+
+      model.emit('event-1');
+      model.emit('event-2');
+    });
+
+    it('callback queue should be intact', function (done) {
+      var cb = new Callback(),
+        first, second;
+
+      cb.run(function () {
+        assert.strictEqual(1, model._callbacks['event-1'].length);
+        assert.strictEqual(1, model._callbacks['event-2'].length);
+        done();
+      });
+
+      first = cb.chain();
+      second = cb.chain();
+
+      model.chain('event-1', function (val, cb) {
+        setTimeout(function () {
+          cb();
+          first();
+        }, 100);
+      });
+
+      model.chain('event-2', function (val, cb) {
+        cb();
+        second();
+      });
+
+      model.emit('event-1');
+      model.emit('event-2');
     });
   });
 
