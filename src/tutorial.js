@@ -157,11 +157,8 @@ exports = Class(Emitter, function (supr) {
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
         });
-        storage.push(storageID, {
-          type: opts.type,
-          id: id,
-          ms: head.ms === false ? 0 : opts.milestone
-        });
+        this.setCompleted(opts.type, id,
+          head.ms === false ? 0 : opts.milestone);
       } else if (opts.loop) {
         this.build(opts);
       }
@@ -178,6 +175,14 @@ exports = Class(Emitter, function (supr) {
     });
 
     storage.set(storageID, tutorial_data);
+  };
+
+  this.setCompleted = function (type, id, ms) {
+    storage.push(storageID, {
+      type: type,
+      id: id,
+      ms: ms
+    });
   };
 
   this.isCompleted = function (id, params) {
