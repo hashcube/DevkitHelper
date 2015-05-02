@@ -249,16 +249,17 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.destroy = this.onRelease = function () {
-    this._attributes = {};
-    this._previousAttributes = {};
-    this.removeAllListeners();
-
     _.each(this._callbacks, function (evnt) {
       _.each(evnt, function (cb) {
         cb.clear();
       });
     });
+
+    this._activeCBs = [];
+    this._attributes = {};
+    this._previousAttributes = {};
     this._callbacks = {};
+    this.removeAllListeners();
   };
 
 });
