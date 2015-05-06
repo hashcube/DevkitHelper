@@ -201,4 +201,8 @@ exports = Class(Emitter, function (supr) {
     }
     return false;
   };
+
+  this.clean = function () {
+    this.view.removeAllListeners('next');
+  };
 });
