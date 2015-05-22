@@ -50,6 +50,9 @@ exports = (function() {
       return false;
     }
 
+    // disable back button
+    history.setBusy();
+
     view.emit('loading:show');
     view.updateOpts({
       superview: parent,
@@ -92,6 +95,9 @@ exports = (function() {
     view.updateOpts({
       visible: false
     });
+
+    // reset backbutton
+    history.resetBusy();
     view.emit('loading:hide');
   };
 

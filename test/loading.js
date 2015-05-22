@@ -1,8 +1,9 @@
 /* global jsio, loading, beforeEach, test_util, View,
-  loader */
+  loader, history */
 
 jsio('import test.lib.util as test_util');
 jsio('import DevkitHelper.loading as loading');
+jsio('import DevkitHelper.history as history');
 jsio('import ui.View as View');
 jsio('import ui.resource.loader as loader');
 
@@ -48,21 +49,33 @@ describe('Loading', function () {
       }
     );
 
+    it('should call setBusy of history', function (done) {
+      var parent = new View(),
+        cache = history.setBusy;
+
+      history.setBusy = function () {
+        history.setBusy = cache;
+        done();
+      };
+
+      loading.show(parent);
+    });
+
    it('should make loading view visible and update its superview as' +
      ' passed parent', function () {
        var parent = new View();
- 
+
        loading.show(parent);
        assert.strictEqual(true, view.style.visible);
        assert.strictEqual(parent.uid, view.__parent.uid);
      }
    );
- 
+
    it('should invoke loaders preload method with specified ' +
      'path', function (done) {
        var view = new View(),
          cache = loader.preload;
- 
+
        loader.preload = function (path) {
          loader.preload = cache;
          done(path === folders['puzzle'] ? undefined : 'error');
@@ -70,25 +83,25 @@ describe('Loading', function () {
        loading.show(view, 'puzzle');
      }
    );
- 
+
    it('should register hide method to listen parents ' +
      'ViewDidDisappear event', function (done) {
        var parent = new View(),
          cache_hide = loading.hide;
- 
+
        loading.hide = function () {
          loading.hide = cache_hide;
          done();
        };
- 
+
        loading.show(parent);
        parent.emit('ViewDidDisappear');
      }
    );
- 
+
    it('should invoke callback if provided', function (done) {
      var parent = new View();
- 
+
      loading.show(parent, null, done);
    });
   });
@@ -111,5 +124,20 @@ describe('Loading', function () {
       assert.strictEqual(null, view.__parent);
       assert.strictEqual(false, loading._view.style.visible);
     });
+
+    it('should call history.resetBusy', function (done) {
+      var cache = history.resetBusy,
+       parent = new View();
+
+       history.resetBusy = function () {
+         history.resetBusy = cache;
+         done();
+       };
+
+       loading.show(parent);
+       loading.hide();
+
+    });
+
   });
 });
