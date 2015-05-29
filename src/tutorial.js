@@ -188,7 +188,7 @@ exports = Class(Emitter, function (supr) {
   this.isCompleted = function (id, params) {
     var data = storage.get(storageID) || [],
       len = data.length,
-      opts = this.opts || params,
+      opts = params || this.opts,
       pos, i;
 
     for (i = 0; i < len; i++) {
