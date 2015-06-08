@@ -38,7 +38,6 @@ exports = new (Class(Emitter, function () {
   this.initialize = function (loading_view, cache) {
     folders = cache ? cache : {};
     view = loading_view;
-    loading_view.build();
 
     _.bindAll(this, 'show', 'hide');
 
