@@ -46,6 +46,12 @@ describe('Model:', function () {
 
       storage.set('key', {a: 1});
     });
+
+    it('passing null should delete data', function () {
+      storage.set('key', 'val');
+      storage.set('key', null);
+      assert.strictEqual(undefined, storage.get('key'));
+    });
   });
 
   describe('get()', function () {
