@@ -7,8 +7,10 @@
  *
  */
 
-/* global console, loader, _, setTimeout, test */
+/* global console, Emitter, loader, _, setTimeout, test, history */
 /* jshint ignore:start */
+import event.Emitter as Emitter;
+
 import ui.resource.Image as Image;
 import ui.ImageView as ImageView;
 import ui.resource.loader as loader;
@@ -19,11 +21,10 @@ import .history as history;
 import .test as test;
 /* jshint ignore:end */
 
-exports = (function() {
+exports = new (Class(Emitter, function () {
   'use strict';
 
-  var obj = {},
-    debug = false,
+  var debug = false,
     loading = false,
     log = function(msg) {
       if(debug) {
@@ -34,9 +35,11 @@ exports = (function() {
     folders,
     view;
 
-  obj.initialize = function (view_obj, folders_obj) {
-    view = view_obj;
-    folders = folders_obj ? folders_obj : {};
+  this.initialize = function (loading_view, cache) {
+    folders = cache ? cache : {};
+    view = loading_view;
+
+    _.bindAll(this, 'show', 'hide');
 
     test.prepare(this, {
       view: view,
@@ -45,15 +48,11 @@ exports = (function() {
   };
 
   // method to show loading screen
-  obj.show = function(parent, preload, callback) {
-    if (!view) {
-      return false;
-    }
-
+  this.show = function(parent, preload, callback) {
     // disable back button
     history.setBusy();
 
-    view.emit('loading:show');
+    this.emit('show');
     view.updateOpts({
       superview: parent,
       visible: true
@@ -79,14 +78,11 @@ exports = (function() {
   };
 
   // No need to call this, unless you want to hide manually.
-  obj.hide = function() {
-    if (!view) {
-      return false;
-    }
+  this.hide = function() {
     // if images are still loading, call this function again
     if(loading === true) {
       log('flag is ' + loading);
-      setTimeout(obj.hide, 1);
+      setTimeout(this.hide, 1);
       return;
     }
 
@@ -98,8 +94,6 @@ exports = (function() {
 
     // reset backbutton
     history.resetBusy();
-    view.emit('loading:hide');
+    this.emit('hide');
   };
-
-  return obj;
-})();
+}))();

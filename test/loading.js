@@ -1,4 +1,4 @@
-/* global jsio, loading, beforeEach, test_util, View,
+/* global jsio, loading, beforeEach, test_util, View, describe, it, assert,
   loader, history */
 
 jsio('import test.lib.util as test_util');
@@ -14,6 +14,8 @@ describe('Loading', function () {
     folders = {puzzle: 'image/puzzle'},
     init = function () {
       view = new View();
+      view.build = function () {
+      };
       loading.initialize(view, folders);
     },
     reloadLoading = function () {
@@ -42,13 +44,6 @@ describe('Loading', function () {
   });
 
   describe('show()', function () {
-    it('shouldnt do anything and return false if invoked without' +
-      ' initialise', function () {
-        reloadLoading();
-        assert.strictEqual(false, loading.show());
-      }
-    );
-
     it('should call setBusy of history', function (done) {
       var parent = new View(),
         cache = history.setBusy;
@@ -61,59 +56,54 @@ describe('Loading', function () {
       loading.show(parent);
     });
 
-   it('should make loading view visible and update its superview as' +
-     ' passed parent', function () {
-       var parent = new View();
+    it('should make loading view visible and update superview', function () {
+      var parent = new View();
 
-       loading.show(parent);
-       assert.strictEqual(true, view.style.visible);
-       assert.strictEqual(parent.uid, view.__parent.uid);
-     }
-   );
+      loading.show(parent);
+      assert.strictEqual(true, view.style.visible);
+      assert.strictEqual(parent.uid, view.__parent.uid);
+    });
 
-   it('should invoke loaders preload method with specified ' +
-     'path', function (done) {
-       var view = new View(),
-         cache = loader.preload;
+    it('should invoke loaders preload method with path', function (done) {
+        var view = new View(),
+          cache = loader.preload;
 
-       loader.preload = function (path) {
-         loader.preload = cache;
-         done(path === folders['puzzle'] ? undefined : 'error');
-       };
-       loading.show(view, 'puzzle');
-     }
-   );
-
-   it('should register hide method to listen parents ' +
-     'ViewDidDisappear event', function (done) {
-       var parent = new View(),
-         cache_hide = loading.hide;
-
-       loading.hide = function () {
-         loading.hide = cache_hide;
-         done();
-       };
-
-       loading.show(parent);
-       parent.emit('ViewDidDisappear');
-     }
-   );
-
-   it('should invoke callback if provided', function (done) {
-     var parent = new View();
-
-     loading.show(parent, null, done);
-   });
-  });
-
-  describe('hide()', function () {
-    it('should return false if loading module is not ' +
-      'initialized', function () {
-        reloadLoading();
-        assert.strictEqual(false, loading.hide());
+        loader.preload = function (path) {
+          loader.preload = cache;
+          done(path === folders.puzzle ? undefined : 'error');
+        };
+        loading.show(view, 'puzzle');
       }
     );
 
+    it('should register hide ViewDidDisappear event', function (done) {
+      var parent = new View(),
+        cache_hide = loading.hide;
+
+      loading.hide = function () {
+        loading.hide = cache_hide;
+        done();
+      };
+
+      loading.show(parent);
+      parent.emit('ViewDidDisappear');
+    });
+
+    it('should invoke callback if provided', function (done) {
+      var parent = new View();
+
+      loading.show(parent, null, done);
+    });
+
+    it('should emit show', function (done) {
+      var parent = new View();
+
+      loading.once('show', done);
+      loading.show(parent);
+    });
+  });
+
+  describe('hide()', function () {
     it('should remove view from parent and hide it', function () {
       var parent = new View();
 
@@ -127,17 +117,23 @@ describe('Loading', function () {
 
     it('should call history.resetBusy', function (done) {
       var cache = history.resetBusy,
-       parent = new View();
+        parent = new View();
 
-       history.resetBusy = function () {
-         history.resetBusy = cache;
-         done();
-       };
+      history.resetBusy = function () {
+        history.resetBusy = cache;
+        done();
+      };
 
-       loading.show(parent);
-       loading.hide();
-
+      loading.show(parent);
+      loading.hide();
     });
 
+    it('should emit hide', function (done) {
+      var parent = new View();
+
+      loading.show(parent);
+      loading.on('hide', done);
+      loading.hide();
+    });
   });
 });
