@@ -74,7 +74,7 @@ describe('Model:', function () {
       model.set('key', 2);
     });
 
-    it('should emit signal if silent', function (done) {
+    it('should emit signal if not silent', function (done) {
       model.on('change:key', function () {
         done();
       });
