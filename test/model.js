@@ -73,6 +73,23 @@ describe('Model:', function () {
       model.set('key', 3, true);
       model.set('key', 2);
     });
+
+    it('should emit signal if silent', function (done) {
+      model.on('change:key', function () {
+        done();
+      });
+      model.unset('key', false);
+    });
+
+    it('should not emit signal if silent', function () {
+      var flag = 1;
+      model.on('change:key', function () {
+        flag = 0;
+      });
+      model.unset('key', true);
+      assert.equal(undefined, model.get('key'));
+      assert.equal(1, flag);
+    });
   });
 
   describe('getPrevious()', function () {
