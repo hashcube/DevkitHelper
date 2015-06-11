@@ -57,9 +57,11 @@ exports = Class(Emitter, function (supr) {
     return this;
   };
 
-  this.unset = function (key) {
+  this.unset = function (key, silent) {
     delete this._attributes[key];
-    this.emit('change:' + key);
+    if (!silent) {
+      this.emit('change:' + key);
+    }
     return this;
   };
 
