@@ -83,6 +83,7 @@ describe('Model:', function () {
 
     it('should not emit signal if silent', function () {
       var flag = 1;
+
       model.on('change:key', function () {
         flag = 0;
       });
