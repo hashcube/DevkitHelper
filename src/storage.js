@@ -31,6 +31,12 @@ exports = {
   set: function (key, val) {
     'use strict';
 
+    // avoid setting null/undefined
+    if (!val) {
+      this.del(key);
+      return;
+    }
+
     if (_.isObject(val)) {
       val = JSON.stringify(val);
     }
