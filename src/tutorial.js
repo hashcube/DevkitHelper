@@ -155,7 +155,9 @@ exports = Class(Emitter, function (supr) {
           text: head.text,
           action: action,
           next: (currentHead < length && !head.hideNext),
-          ok: !!head.ok
+          ok: !!head.ok,
+          actions: head.actions,
+          id: head.id
         });
         this.setCompleted(opts.type, id,
           head.ms === false ? 0 : opts.milestone);
