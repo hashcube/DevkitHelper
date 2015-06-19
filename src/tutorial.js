@@ -51,12 +51,13 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.start = function (forceStart) {
-    var head = tutorials[currentHead],
-      id = head.id,
-      opts = this.opts,
-      pos = opts.positions[id];
+    var head, id, opts, pos;
 
     if (tutorials.length > 0) {
+      head = tutorials[currentHead];
+      id = head.id;
+      opts = this.opts;
+      pos = opts.positions[id];
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         pos.view.timeout || 1000);
     }
