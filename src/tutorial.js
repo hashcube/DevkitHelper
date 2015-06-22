@@ -31,11 +31,16 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.build = function (opts) {
+    var view = opts.view;
+
     currentHead = 0;
     cancel = false;
     this.opts = opts;
-    this.view = opts.view;
-    this.view.on('next', bind(this, this.show));
+    this.views = _.isArray(view) ? view : [view];
+    _.each(this.views, bind(this, function (view) {
+      view.on('next', bind(this, this.show));
+    }));
+
     tutorials = [];
     if (opts.type) {
       tutorials = this.data[opts.type][opts.milestone] || [];
@@ -46,10 +51,15 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.start = function (forceStart) {
-    if (tutorials.length > 0) {
+    var head, id, opts, pos;
 
+    if (tutorials.length > 0) {
+      head = tutorials[currentHead];
+      id = head.id;
+      opts = this.opts;
+      pos = opts.positions[id];
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
-        this.opts.timeout || 1000);
+        pos.view.timeout || 1000);
     }
   };
 
@@ -86,10 +96,10 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.show = function (forceStart) {
-    var view = this.view,
-      opts = this.opts,
+    var opts = this.opts,
       disable = opts.disable || false,
-      length = tutorials.length;
+      length = tutorials.length,
+      head, id, pos, view;
 
     if (currentHead === 0 || forceStart) {
       if (opts.start) {
@@ -98,6 +108,11 @@ exports = Class(Emitter, function (supr) {
     }
 
     if (currentHead >= length) {
+      head = tutorials[currentHead - 1];
+      id = head.id;
+      pos = opts.positions[id];
+      view = this.views[pos.view.index || 0];
+
       view.finish(disable, function () {
         var last = tutorials[currentHead - 1];
 
@@ -111,9 +126,10 @@ exports = Class(Emitter, function (supr) {
       return;
     }
 
-    var head = tutorials[currentHead++],
-      id = head.id,
-      pos = opts.positions[id];
+    head = tutorials[currentHead++];
+    id = head.id;
+    pos = opts.positions[id];
+    view = this.views[pos.view.index || 0].build(pos.view.params);
 
     if (pos && !this.isCompleted(id)) {
       var fun = pos.func || 'getPosition',
@@ -205,6 +221,8 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.clean = function () {
-    this.view.removeAllListeners('next');
+    _.each(this.views, bind(this, function (view) {
+      view.removeAllListeners('next');
+    }));
   };
 });
