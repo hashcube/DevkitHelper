@@ -11,11 +11,12 @@
 
 exports = function (key, params, language) {
   'use strict';
-  var path = 'resources/languages/';
+  var path = 'resources/languages/',
+    localize, pluralize, parser;
 
   language = language || GC.app.language || 'en';
 
-  var localize = function (key, params, language) {
+  localize = function (key, params, language) {
     var store, string;
 
     params = params || [];
@@ -35,7 +36,8 @@ exports = function (key, params, language) {
       return localize(key, params, 'en_US');
     }
     return key;
-  },
+  };
+
   pluralize = function (message) {
     if (!message) {
       return;
@@ -63,7 +65,7 @@ exports = function (key, params, language) {
 
       return count + ' ' + word;
     });
-  },
+  };
 
   parser =  function (message, params) {
     return message.replace(/\$(\d+)/g, function (str, match) {
