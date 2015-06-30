@@ -1,20 +1,24 @@
-/* global jsio, it, before, describe, assert, l18n, CACHE:true, GC.app */
+/* global jsio, it, before, describe, assert, CACHE:true, GC:true, i18n */
 
 jsio('import DevkitHelper.i18n as i18n');
 
-var init = function (done) {
+var init = function () {
   'use strict';
 
   CACHE = {
-    'resources/languages/en_US.json': JSON.stringify({
-      'score': 'Score',
-      'with': '$1 world'
+    'resources/languages/en.json': JSON.stringify({
+      score: 'Score',
+      with_str: '$1 world',
+      moves: 'finish level in [[$1, move]].',
+      cacti: 'I have [[$1, cactus]].'
+    }),
+    'resources/languages/plurals_en.json': JSON.stringify({
+      cactus: 'cacti'
     })
   };
   GC.app = {
-    language: 'en_US'
-  }
-  done();
+    language: 'en'
+  };
 };
 
 describe('Localization', function  () {
@@ -31,6 +35,24 @@ describe('Localization', function  () {
   });
 
   it('Should return sent data', function () {
-    assert.equal('hello world', i18n('with', ['hello']));
+    assert.equal('hello world', i18n('with_str', ['hello']));
+  });
+});
+
+describe('pluralization', function () {
+  'use strict';
+
+  before(init);
+  it('should return singular string for moves', function () {
+    assert.strictEqual('finish level in 1 move.', i18n('moves', [1]));
+  });
+  it('should return plural string for moves', function () {
+    assert.strictEqual('finish level in 10 moves.', i18n('moves', [10]));
+  });
+  it('should return singular string for cactus', function () {
+    assert.strictEqual('I have 1 cactus.', i18n('cacti', [1]));
+  });
+  it('should return pluralized string for cactus', function () {
+    assert.strictEqual('I have 10 cacti.', i18n('cacti', [10]));
   });
 });
