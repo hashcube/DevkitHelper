@@ -52,7 +52,7 @@ exports = Class(Emitter, function (supr) {
 
   this.start = function (forceStart) {
     var opts = this.opts,
-     head, id, pos;
+      head, id, pos;
 
     if (tutorials.length > 0) {
       head = tutorials[currentHead];
