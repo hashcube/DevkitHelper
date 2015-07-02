@@ -51,15 +51,17 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.start = function (forceStart) {
-    var head, id, opts, pos;
+    var opts = this.opts,
+     head, id, pos;
 
     if (tutorials.length > 0) {
       head = tutorials[currentHead];
       id = head.id;
-      opts = this.opts;
       pos = opts.positions[id];
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         pos.view.timeout || 1000);
+    } else if (opts.end){
+      opts.end();
     }
   };
 
@@ -161,7 +163,11 @@ exports = Class(Emitter, function (supr) {
         if (disable) {
           disable.setHandleEvents(false, true);
         }
-
+        view.on('completed', function () {
+          if (opts.end) {
+            opts.end();
+          }
+        });
         view.show({
           superview: opts.superview,
           x: x,
@@ -223,6 +229,7 @@ exports = Class(Emitter, function (supr) {
   this.clean = function () {
     _.each(this.views, bind(this, function (view) {
       view.removeAllListeners('next');
+      view.removeAllListeners('completed');
     }));
   };
 });
