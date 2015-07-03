@@ -60,10 +60,8 @@ exports = Class(Emitter, function (supr) {
       pos = opts.positions[id];
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         pos.view.timeout || 1000);
-    } else {
-      if (opts.finish) {
-        opts.finish();
-      }
+    } else if (opts.finish) {
+      opts.finish();
     }
   };
 
