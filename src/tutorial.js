@@ -104,6 +104,15 @@ exports = Class(Emitter, function (supr) {
       length = tutorials.length,
       head, id, pos, view;
 
+    if (currentHead === 0) {
+      head = tutorials[currentHead];
+      id = head.id;
+      pos = opts.positions[id];
+      if (pos.start) {
+        pos.start();
+      }
+    }
+
     if (currentHead >= length) {
       head = tutorials[currentHead - 1];
       id = head.id;
@@ -139,9 +148,6 @@ exports = Class(Emitter, function (supr) {
           return pos <= size && pos >= 0;
         };
 
-      if (pos.start) {
-        pos.start();
-      }
 
       if (context) {
         if (sub) {
