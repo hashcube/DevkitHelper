@@ -43,27 +43,13 @@ exports = function (key, params, language) {
       return;
     }
 
-    return message.replace(/\[\[[^\]]+\]\]/g, function (match) {
-      var matches = match.replace('[[', '').replace(']]', '').split(','),
-        count = parseInt(matches[0].trim(), 10),
-        is_more = count > 1,
-        word = matches[1].trim(),
-        store;
+    return message.replace(/{{[^}}]*}}/g, function (match) {
+      var matches = match.replace('{{', '').replace('}}', '').split('|'),
+        val = parseInt(matches[0].trim(), 10),
+        singular_val = matches[1].trim(),
+        plural_val = matches[2].trim();
 
-      try {
-        store = JSON.parse(CACHE[path + 'plurals_' + language + '.json']);
-      } catch (e) {
-      }
-
-      if (is_more) {
-        if (store && store[word]) {
-          word = store[word];
-        } else if (language === 'en') {
-          word += 's';
-        }
-      }
-
-      return count + ' ' + word;
+        return val > 1 ? plural_val : singular_val;
     });
   };
 

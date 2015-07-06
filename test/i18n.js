@@ -9,11 +9,8 @@ var init = function () {
     'resources/languages/en.json': JSON.stringify({
       score: 'Score',
       with_str: '$1 world',
-      moves: 'finish level in [[$1, move]].',
-      cacti: 'I have [[$1, cactus]].'
-    }),
-    'resources/languages/plurals_en.json': JSON.stringify({
-      cactus: 'cacti'
+      moves: 'finish level in $1 {{$1|move|moves}}.',
+      cacti: 'I have {{$1| a cactus| cacti}}.'
     })
   };
   GC.app = {
@@ -50,9 +47,9 @@ describe('pluralization', function () {
     assert.strictEqual('finish level in 10 moves.', i18n('moves', [10]));
   });
   it('should return singular string for cactus', function () {
-    assert.strictEqual('I have 1 cactus.', i18n('cacti', [1]));
+    assert.strictEqual('I have a cactus.', i18n('cacti', [1]));
   });
   it('should return pluralized string for cactus', function () {
-    assert.strictEqual('I have 10 cacti.', i18n('cacti', [10]));
+    assert.strictEqual('I have cacti.', i18n('cacti', [10]));
   });
 });
