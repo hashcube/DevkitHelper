@@ -58,10 +58,11 @@ exports = Class(Emitter, function (supr) {
       head = tutorials[currentHead];
       id = head.id;
       pos = opts.positions[id];
+      if (pos.before) {
+        pos.before();
+      }
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         pos.view.timeout || 1000);
-    } else if (opts.finish) {
-      opts.finish();
     }
   };
 
@@ -103,12 +104,6 @@ exports = Class(Emitter, function (supr) {
       length = tutorials.length,
       head, id, pos, view;
 
-    if (currentHead === 0 || forceStart) {
-      if (opts.start) {
-        opts.start();
-      }
-    }
-
     if (currentHead >= length) {
       head = tutorials[currentHead - 1];
       id = head.id;
@@ -121,8 +116,8 @@ exports = Class(Emitter, function (supr) {
         if (last.cb) {
           last.cb();
         }
-        if (opts.finish) {
-          opts.finish();
+        if (pos.finish) {
+          pos.finish();
         }
       });
       return;
@@ -143,6 +138,10 @@ exports = Class(Emitter, function (supr) {
         inRange = function (size, pos) {
           return pos <= size && pos >= 0;
         };
+
+      if (pos.start) {
+        pos.start();
+      }
 
       if (context) {
         if (sub) {
