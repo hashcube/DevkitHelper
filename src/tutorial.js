@@ -148,7 +148,6 @@ exports = Class(Emitter, function (supr) {
           return pos <= size && pos >= 0;
         };
 
-
       if (context) {
         if (sub) {
           context = context[id][sub];
