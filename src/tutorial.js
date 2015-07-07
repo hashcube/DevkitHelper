@@ -58,8 +58,8 @@ exports = Class(Emitter, function (supr) {
       head = tutorials[currentHead];
       id = head.id;
       pos = opts.positions[id];
-      if (pos.before) {
-        pos.before();
+      if (opts.before) {
+        opts.before();
       }
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         pos.view.timeout || 1000);
@@ -104,12 +104,9 @@ exports = Class(Emitter, function (supr) {
       length = tutorials.length,
       head, id, pos, view;
 
-    if (currentHead === 0) {
-      head = tutorials[currentHead];
-      id = head.id;
-      pos = opts.positions[id];
-      if (pos.start) {
-        pos.start();
+    if (currentHead === 0 || forceStart) {
+      if (opts.start) {
+        opts.start();
       }
     }
 
@@ -125,8 +122,8 @@ exports = Class(Emitter, function (supr) {
         if (last.cb) {
           last.cb();
         }
-        if (pos.finish) {
-          pos.finish();
+        if (opts.finish) {
+          opts.finish();
         }
       });
       return;
