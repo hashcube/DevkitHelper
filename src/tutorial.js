@@ -58,10 +58,11 @@ exports = Class(Emitter, function (supr) {
       head = tutorials[currentHead];
       id = head.id;
       pos = opts.positions[id];
+      if (opts.before) {
+        opts.before();
+      }
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         pos.view.timeout || 1000);
-    } else if (opts.finish) {
-      opts.finish();
     }
   };
 
