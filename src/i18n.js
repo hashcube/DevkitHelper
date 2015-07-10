@@ -45,11 +45,17 @@ exports = function (key, params, language) {
 
     return message.replace(/{{[^}}]*}}/g, function (match) {
       var matches = match.replace('{{', '').replace('}}', '').split('|'),
-        val = parseInt(matches[0].trim(), 10),
-        singular_val = matches[1].trim(),
-        plural_val = matches[2].trim();
+          val = parseInt(matches[0].trim(), 10),
+          length = matches.length,
+          result;
 
-        return val > 1 ? plural_val : singular_val;
+      if (length >= val + 1) {
+        result = matches[val].trim();
+      } else {
+        result = matches[length - 1].trim();
+      }
+
+      return result;
     });
   };
 
