@@ -60,7 +60,7 @@ exports = function (key, params, language) {
           values[words[0].trim()] = words[1].trim();
         } else {
           result = 'i18n: There\'s an error in the format (n:string)';
-          break;
+          return result;
         }
       }
 
