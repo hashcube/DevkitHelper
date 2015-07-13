@@ -1,3 +1,4 @@
+
 /* Internationalization module for Game Closure Devkit
  *
  * Authors: Jishnu Mohan <jishnu7@gmail.com>,
@@ -8,6 +9,8 @@
  */
 
 /* global CACHE, GC */
+
+import util.underscore as _;
 
 exports = function (key, params, language) {
   'use strict';
@@ -45,14 +48,24 @@ exports = function (key, params, language) {
 
     return message.replace(/{{[^}}]*}}/g, function (match) {
       var matches = match.replace('{{', '').replace('}}', '').split('|'),
-          val = parseInt(matches[0].trim(), 10),
-          length = matches.length,
-          result;
+        val = matches[0].trim(),
+        length = matches.length,
+        values = {},
+        result;
 
-      if (length >= val + 1) {
-        result = matches[val].trim();
-      } else {
+      for (var i = 1; i < length; i++) {
+        var words = matches[i].split(':');
+
+        if (words.length === 2) {
+          values[words[0].trim()] = words[1].trim();
+        }
+      }
+
+      if (_.isUndefined(values[val])) {
         result = matches[length - 1].trim();
+        result = result.split(':')[1];
+      } else {
+        result = values[val].trim();
       }
 
       return result;

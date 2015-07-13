@@ -9,10 +9,10 @@ var init = function () {
     'resources/languages/en.json': JSON.stringify({
       score: 'Score',
       with_str: '$1 world',
-      moves: 'finish level in $1 {{$1|move|moves}}.',
-      cacti: 'I have {{$1| a cactus| cacti}}.',
-      hair: 'I have {{$1 | a hair | 2 hairs | a lot of hair}} left on my head.',
-      sheep: 'I have $1 {{$1 | sheep}}.'
+      moves: 'finish level in $1 {{$1|1:move|2:moves}}.',
+      cacti: 'I have {{$1| 1:a cactus| 2:cacti}}.',
+      hair: 'I have {{$1 | 0:no hair | 1:a hair | 2:2 hairs | 3:a lot of hair}} left on my head.',
+      sheep: 'I have $1 {{$1 | 1:sheep}}.'
     })
   };
   GC.app = {
@@ -70,6 +70,11 @@ describe('pluralization', function () {
   it('should return specific string for a lot of hair', function () {
     assert.strictEqual('I have a lot of hair left on my head.',
       i18n('hair', [100000]));
+  });
+
+  it('should return specific string no hair', function () {
+    assert.strictEqual('I have no hair left on my head.',
+      i18n('hair', [0]));
   });
 
   it('should return singular string for 1 sheep', function () {
