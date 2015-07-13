@@ -58,6 +58,9 @@ exports = function (key, params, language) {
 
         if (words.length === 2) {
           values[words[0].trim()] = words[1].trim();
+        } else {
+          result = 'i18n: There\'s an error in the format (n:string)';
+          break;
         }
       }
 
