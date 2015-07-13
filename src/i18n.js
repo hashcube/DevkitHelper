@@ -1,3 +1,4 @@
+
 /* Internationalization module for Game Closure Devkit
  *
  * Authors: Jishnu Mohan <jishnu7@gmail.com>,
@@ -9,18 +10,23 @@
 
 /* global CACHE, GC */
 
+import util.underscore as _;
+
 exports = function (key, params, language) {
   'use strict';
+  var path = 'resources/languages/',
+    localize, pluralize, parser;
 
-  var localize = function (key, params, language) {
+  language = language || GC.app.language || 'en';
+
+  localize = function (key, params, language) {
     var store, string;
 
-    language = language || GC.app.language || 'en_US';
     params = params || [];
 
     // if language.json doesn't exists fallback to en_US
     try {
-      store = JSON.parse(CACHE['resources/languages/' + language + '.json']);
+      store = JSON.parse(CACHE[path + language + '.json']);
     } catch (err) {
     }
 
@@ -33,7 +39,41 @@ exports = function (key, params, language) {
       return localize(key, params, 'en_US');
     }
     return key;
-  },
+  };
+
+  pluralize = function (message) {
+    if (!message) {
+      return;
+    }
+
+    return message.replace(/{{[^}}]*}}/g, function (match) {
+      var matches = match.replace('{{', '').replace('}}', '').split('|'),
+        val = matches[0].trim(),
+        length = matches.length,
+        values = {},
+        result;
+
+      for (var i = 1; i < length; i++) {
+        var words = matches[i].split(':');
+
+        if (words.length === 2) {
+          values[words[0].trim()] = words[1].trim();
+        } else {
+          result = 'i18n: There\'s an error in the format (n:string)';
+          return result;
+        }
+      }
+
+      if (_.isUndefined(values[val])) {
+        result = matches[length - 1].trim();
+        result = result.split(':')[1];
+      } else {
+        result = values[val].trim();
+      }
+
+      return result;
+    });
+  };
 
   parser =  function (message, params) {
     return message.replace(/\$(\d+)/g, function (str, match) {
@@ -42,5 +82,5 @@ exports = function (key, params, language) {
     });
   };
 
-  return localize(key, params, language);
+  return pluralize(localize(key, params, language));
 };
