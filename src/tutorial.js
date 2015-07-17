@@ -117,10 +117,8 @@ exports = Class(Emitter, function (supr) {
       view = this.views[pos.view.index || 0];
 
       view.finish(disable, function () {
-        var last = tutorials[currentHead - 1];
-
-        if (last.cb) {
-          last.cb();
+        if (head.cb) {
+          head.cb();
         }
         if (opts.finish) {
           opts.finish();
