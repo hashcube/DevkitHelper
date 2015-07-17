@@ -177,7 +177,8 @@ exports = Class(Emitter, function (supr) {
           ok: !!head.ok,
           actions: head.actions,
           id: head.id,
-          no_image: head.no_image
+          no_image: head.no_image,
+          info: head.info
         });
         this.setCompleted(opts.type, id,
           head.ms === false ? 0 : opts.milestone);
