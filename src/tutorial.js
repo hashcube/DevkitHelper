@@ -31,7 +31,8 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.build = function (opts) {
-    var view = opts.view;
+    var view = opts.view,
+      type = opts.type;
 
     currentHead = 0;
     cancel = false;
@@ -42,8 +43,11 @@ exports = Class(Emitter, function (supr) {
     }));
 
     tutorials = [];
-    if (opts.type) {
-      tutorials = this.data[opts.type][opts.milestone] || [];
+    if (type) {
+      tutorials = _.filter(this.data[type][opts.milestone] || [],
+        bind(this, function (tut) {
+          return !this.isCompleted(tut.id);
+        }));
     }
     if (opts.autostart !== false) {
       this.start();
@@ -132,7 +136,7 @@ exports = Class(Emitter, function (supr) {
     pos = opts.positions[id];
     view = this.views[pos.view.index || 0].build(pos.view.params);
 
-    if (pos && !this.isCompleted(id)) {
+    if (pos) {
       var fun = pos.func || 'getPosition',
         param = pos.parameters || [],
         action = pos.action || null,
