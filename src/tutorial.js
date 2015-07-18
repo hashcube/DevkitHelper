@@ -214,8 +214,8 @@ exports = Class(Emitter, function (supr) {
 
     for (i = 0; i < len; i++) {
       pos = data[i];
-      if (pos.type === opts.type &&
-          (pos.ms === 0 || pos.ms === opts.milestone) &&
+      if (!pos.type || (pos.type === opts.type) &&
+          (!pos.ms|| pos.ms === 0 || pos.ms === opts.milestone) &&
           pos.id === id) {
         return true;
       }
