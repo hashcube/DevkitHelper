@@ -10,8 +10,8 @@ var init = function () {
       score: 'Score',
       with_str: '$1 world',
       moves: 'finish level in $1 {{$1|1:move|2:moves}}.',
-      cacti: 'I have {{$1| 1:a cactus| 2:cacti}}.',
-      hair: 'I have {{$1 | 0:no hair | 1:a hair | 2:2 hairs | 3:a lot of hair}} left on my head.',
+      cacti: 'I have {{$1| 1:a cactus| 2: cacti}}.',
+      hair: 'I have {{$1 | 0:no hair | 1:a hair | 2: 2 hairs | 3:a lot of hair}} left on my head.',
       sheep: 'I have $1 {{$1 | 1:sheep}}.',
       fail: 'I have $1 {{$1 | message}}'
     })
