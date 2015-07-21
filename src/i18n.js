@@ -66,7 +66,7 @@ exports = function (key, params, language) {
 
       if (_.isUndefined(values[val])) {
         result = matches[length - 1].trim();
-        result = result.split(':')[1];
+        result = result.split(':')[1].trim();
       } else {
         result = values[val].trim();
       }
