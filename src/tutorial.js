@@ -38,9 +38,6 @@ exports = Class(Emitter, function (supr) {
     cancel = false;
     this.opts = opts;
     this.views = _.isArray(view) ? view : [view];
-    _.each(this.views, bind(this, function (view) {
-      view.on('next', bind(this, this.show));
-    }));
 
     tutorials = [];
     if (type) {
@@ -135,6 +132,7 @@ exports = Class(Emitter, function (supr) {
     id = head.id;
     pos = opts.positions[id];
     view = this.views[pos.view.index || 0].build(pos.view.params);
+    view.once('next', bind(this, this.show));
 
     if (pos) {
       var fun = pos.func || 'getPosition',
