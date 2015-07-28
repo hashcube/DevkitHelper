@@ -53,7 +53,7 @@ exports = Class(Emitter, function (supr) {
 
   this.start = function (forceStart) {
     var opts = this.opts,
-      head, id, pos;
+      head, id, pos, timeout;
 
     if (tutorials.length > 0) {
       head = tutorials[currentHead];
@@ -62,8 +62,9 @@ exports = Class(Emitter, function (supr) {
       if (opts.before) {
         opts.before();
       }
+      timeout = pos.view.timeout;
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
-        pos.view.timeout || 1000);
+        _.isNumber(timeout) ? timeout : 1000);
     }
   };
 
