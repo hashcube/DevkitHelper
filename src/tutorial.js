@@ -159,8 +159,8 @@ exports = Class(Emitter, function (supr) {
       x = pos.x;
       y = pos.y;
       if (inRange(device.screen.width, x) && inRange(device.screen.height, y)) {
-        x += (head.x || 0);
-        y += (head.y || 0);
+        x += (head.x * pos.scale || 0);
+        y += (head.y * pos.scale || 0);
 
         if (disable) {
           disable.setHandleEvents(false, true);
@@ -179,7 +179,8 @@ exports = Class(Emitter, function (supr) {
           actions: head.actions,
           id: head.id,
           no_image: head.no_image,
-          info: head.info
+          info: head.info,
+          extra: head.extra
         });
         this.setCompleted(opts.type, id,
           head.ms === false ? 0 : opts.milestone);
