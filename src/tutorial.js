@@ -40,7 +40,7 @@ exports = Class(Emitter, function (supr) {
     this.views = _.isArray(view) ? view : [view];
 
     tutorials = [];
-    if (type) {
+    if (type && this.data[type]) {
       tutorials = _.filter(this.data[type][opts.milestone] || [],
         bind(this, function (tut) {
           return !this.isCompleted(tut.id);
