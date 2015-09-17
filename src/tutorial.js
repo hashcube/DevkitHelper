@@ -40,7 +40,7 @@ exports = Class(Emitter, function (supr) {
     this.views = _.isArray(view) ? view : [view];
 
     tutorials = [];
-    if (type) {
+    if (type && this.data[type]) {
       tutorials = _.filter(this.data[type][opts.milestone] || [],
         bind(this, function (tut) {
           return !this.isCompleted(tut.id);
@@ -104,7 +104,7 @@ exports = Class(Emitter, function (supr) {
     var opts = this.opts,
       disable = opts.disable || false,
       length = tutorials.length,
-      head, id, pos, view;
+      head, id, pos, view, completed;
 
     if (currentHead === 0 || forceStart) {
       if (opts.start) {
@@ -112,21 +112,28 @@ exports = Class(Emitter, function (supr) {
       }
     }
 
-    if (currentHead >= length) {
+    if (currentHead > 0) {
       head = tutorials[currentHead - 1];
-      id = head.id;
-      pos = opts.positions[id];
-      view = this.views[pos.view.index || 0];
+      completed = currentHead >= length;
 
-      view.finish(disable, function () {
-        if (head.cb) {
-          head.cb();
-        }
-        if (opts.finish) {
-          opts.finish();
-        }
-      });
-      return;
+      if (head.finish_immediate || completed) {
+        id = head.id;
+        pos = opts.positions[id];
+        view = this.views[pos.view.index || 0];
+
+        view.finish(disable, function () {
+          if (head.cb) {
+            head.cb();
+          }
+          if (opts.finish) {
+            opts.finish();
+          }
+        });
+      }
+
+      if (completed) {
+        return;
+      }
     }
 
     head = tutorials[currentHead++];
@@ -166,7 +173,7 @@ exports = Class(Emitter, function (supr) {
           disable.setHandleEvents(false, true);
         }
 
-        view.show({
+        view.show(merge({
           superview: opts.superview,
           x: x,
           y: y,
@@ -175,13 +182,8 @@ exports = Class(Emitter, function (supr) {
           text: head.text,
           action: action,
           next: (currentHead < length && !head.hideNext),
-          ok: !!head.ok,
-          actions: head.actions,
-          id: head.id,
-          no_image: head.no_image,
-          info: head.info,
-          extra: head.extra
-        });
+          ok: !!head.ok
+        }, head));
         this.setCompleted(opts.type, id,
           head.ms === false ? 0 : opts.milestone);
       } else if (opts.loop) {
