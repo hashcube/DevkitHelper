@@ -70,7 +70,7 @@ exports = (function () {
   };
 
   obj.timeout = function (callback, interval) {
-    setTimeout(callback, mock ? mock : interval);
+    return setTimeout(callback, mock ? mock : interval);
   };
 
   obj.mock = function (interval) {

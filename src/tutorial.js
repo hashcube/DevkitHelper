@@ -125,7 +125,7 @@ exports = Class(Emitter, function (supr) {
           if (head.cb) {
             head.cb();
           }
-          if (opts.finish) {
+          if (completed && opts.finish) {
             opts.finish();
           }
         });
