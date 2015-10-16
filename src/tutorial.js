@@ -149,8 +149,21 @@ exports = Class(Emitter, function (supr) {
         context = pos.context || false,
         sub = pos.sub || false,
         x = 0, y = 0,
-        inRange = function (size, pos) {
-          return pos <= size && pos >= 0;
+        onScreen = function (pos) {
+          var x = pos.x,
+            y = pos.y,
+            height = pos.height || 0,
+            width = pos.width || 0,
+            cords = [
+              [x, y], [x + width, y], [x, y + height], [x + width, y + height]
+            ],
+            inRange = function (size, pos) {
+              return pos <= size && pos >= 0;
+            };
+
+          return _.find(cords, function (curr) {
+            return inRange(device.screen.width, curr[0]) && inRange(device.screen.height, curr[1])
+          });
         };
 
       if (context) {
@@ -165,7 +178,7 @@ exports = Class(Emitter, function (supr) {
 
       x = pos.x;
       y = pos.y;
-      if (inRange(device.screen.width, x) && inRange(device.screen.height, y)) {
+      if (onScreen(pos)) {
         x += (head.x * pos.scale || 0);
         y += (head.y * pos.scale || 0);
 
