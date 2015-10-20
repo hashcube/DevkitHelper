@@ -7,7 +7,7 @@
  *
  */
 
-/* global console, Emitter, loader, _, setTimeout, test, history */
+/* global GC, console, Emitter, loader, _, setTimeout, test, history */
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 
@@ -48,13 +48,14 @@ exports = new (Class(Emitter, function () {
   };
 
   // method to show loading screen
-  this.show = function(parent, preload, callback) {
+  this.show = function(preload, callback) {
     // disable back button
     history.setBusy();
 
     this.emit('show');
     view.updateOpts({
-      superview: parent,
+      superview: GC.app,
+      zIndex: 10,
       visible: true
     });
 
@@ -70,10 +71,10 @@ exports = new (Class(Emitter, function () {
     }
 
     // method to hide loading screen
-    parent.once('ViewDidDisappear', this.hide);
+    GC.app.once('StackChanged', this.hide);
 
     if(callback) {
-      _.defer(_.bind(callback, parent));
+      _.defer(callback);
     }
   };
 
