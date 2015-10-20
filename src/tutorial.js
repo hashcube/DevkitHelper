@@ -191,6 +191,10 @@ exports = Class(Emitter, function (supr) {
           disable.setHandleEvents(false, true);
         }
 
+        if (before) {
+          before();
+        }
+
         view.show(merge({
           superview: opts.superview,
           x: x,
@@ -198,7 +202,6 @@ exports = Class(Emitter, function (supr) {
           width: pos.width,
           height: pos.height,
           text: head.text,
-          before: before,
           action: action,
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
