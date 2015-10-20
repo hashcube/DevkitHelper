@@ -104,7 +104,7 @@ exports = Class(Emitter, function (supr) {
     var opts = this.opts,
       disable = opts.disable || false,
       length = tutorials.length,
-      head, id, pos, view, completed;
+      head, id, pos, view, completed, before;
 
     if (currentHead === 0 || forceStart) {
       if (opts.start) {
@@ -115,10 +115,14 @@ exports = Class(Emitter, function (supr) {
     if (currentHead > 0) {
       head = tutorials[currentHead - 1];
       completed = currentHead >= length;
+      id = head.id;
+      pos = opts.positions[id];
+
+      if (pos.after) {
+        pos.after();
+      }
 
       if (head.finish_immediate || completed) {
-        id = head.id;
-        pos = opts.positions[id];
         view = this.views[pos.view.index || 0];
 
         view.finish(disable, function () {
@@ -139,6 +143,7 @@ exports = Class(Emitter, function (supr) {
     head = tutorials[currentHead++];
     id = head.id;
     pos = opts.positions[id];
+    before = pos.before;
     view = this.views[pos.view.index || 0].build(pos.view.params);
     view.once('next', bind(this, this.show));
 
@@ -193,10 +198,11 @@ exports = Class(Emitter, function (supr) {
           width: pos.width,
           height: pos.height,
           text: head.text,
+          before: before,
           action: action,
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
-        }, head));
+        }, head), head.timeout);
         this.setCompleted(opts.type, id,
           head.ms === false ? 0 : opts.milestone);
       } else if (opts.loop) {
@@ -226,17 +232,36 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.isCompleted = function (id, params) {
-    var data = storage.get(storageID) || [],
-      len = data.length,
+    var completed_data = storage.get(storageID) || [],
+      curr_opts = this.opts,
+      len = completed_data.length,
       opts = params || this.opts,
+      curr_ms_data = (opts.type && this.data[opts.type]) ?
+        this.data[opts.type][opts.milestone] : null,
+      curr_group = curr_ms_data ? _.find(curr_ms_data, function (tut_obj) {
+        return tut_obj.id === id;
+      }).group : null,
+      group_tut_ids = curr_group ? _.map(_.filter(curr_ms_data, function (tut_obj) {
+        return tut_obj.group === curr_group;
+      }), function (tut_obj) {
+        return tut_obj.id;
+      }) : [id],
+      completed_groups = [],
+      canAdd = function (tut_id) {
+        return _.contains(group_tut_ids, tut_id) &&
+          !_.contains(completed_groups, tut_id);
+      },
       pos, i;
 
     for (i = 0; i < len; i++) {
-      pos = data[i];
+      pos = completed_data[i];
       if (pos.type === opts.type &&
           (pos.ms === 0 || pos.ms === opts.milestone) &&
-          pos.id === id) {
-        return true;
+          canAdd(pos.id)) {
+        completed_groups.push(pos.id);
+        if (group_tut_ids.length === completed_groups.length) {
+          return true;
+        }
       }
     }
     return false;
