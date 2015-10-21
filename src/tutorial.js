@@ -28,7 +28,7 @@ exports = Class(Emitter, function (supr) {
           return tut_obj.id === tut_id;
         }).group;
     },
-    getTutorialsWithGroup = function (data, group_id) {
+    getGroup = function (data, group_id) {
       return _.map(_.filter(data, function (tut_obj) {
           return tut_obj.group === group_id;
         }), function (tut_obj) {
@@ -239,39 +239,44 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.setCompleted = function (type, id, ms) {
-    storage.push(storageID, {
-      type: type,
-      id: id,
-      ms: ms
-    });
+    var completed_data = completed_data = storage.get(storageID) || [],
+      curr_data = {
+        type: type,
+        id: id,
+        ms: ms
+      };
+
+    if (_.find(completed_data, function (curr_tut) {
+        return _.isEqual(curr_data, curr_tut);
+      })) {
+      return;
+    }
+
+    storage.push(storageID, curr_data);
   };
 
   this.getTutorialsHavingSameGroup = function (type, milestone, tut_id) {
     var curr_data = (type && this.data[type]) ? this.data[type][milestone] : null,
       curr_group = curr_data ? getGroupId(curr_data, tut_id) : null;
 
-    return curr_group ? getTutorialsWithGroup(curr_data, curr_group) : [tut_id];
+    return curr_group ? getGroup(curr_data, curr_group) : [tut_id];
   };
 
   this.isCompleted = function (id, params) {
     var completed_data = storage.get(storageID) || [],
       len = completed_data.length,
       opts = params || this.opts,
-      group_tut_ids = this.getTutorialsHavingSameGroup(opts.type, opts.milestone, id),
+      current_group_tuts = this.getTutorialsHavingSameGroup(opts.type, opts.milestone, id),
       completed_groups = [],
-      canAdd = function (tut_id) {
-        return _.contains(group_tut_ids, tut_id) &&
-          !_.contains(completed_groups, tut_id);
-      },
       pos, i;
 
     for (i = 0; i < len; i++) {
       pos = completed_data[i];
       if (pos.type === opts.type &&
           (pos.ms === 0 || pos.ms === opts.milestone) &&
-          canAdd(pos.id)) {
+          _.contains(current_group_tuts, pos.id)) {
         completed_groups.push(pos.id);
-        if (group_tut_ids.length === completed_groups.length) {
+        if (current_group_tuts.length === completed_groups.length) {
           return true;
         }
       }
