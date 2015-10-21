@@ -22,7 +22,19 @@ exports = Class(Emitter, function (supr) {
   var currentHead = 0,
     tutorials = 0,
     storageID = 'tutorials',
-    cancel = false;
+    cancel = false,
+    getGroupId = function (data, tut_id) {
+      return _.find(data, function (tut_obj) {
+          return tut_obj.id === tut_id;
+        }).group;
+    },
+    getGroup = function (data, group_id) {
+      return _.map(_.filter(data, function (tut_obj) {
+          return tut_obj.group === group_id;
+        }), function (tut_obj) {
+          return tut_obj.id;
+        });
+    };
 
   this.init = function (opts) {
     supr(this, 'init', []);
@@ -104,7 +116,7 @@ exports = Class(Emitter, function (supr) {
     var opts = this.opts,
       disable = opts.disable || false,
       length = tutorials.length,
-      head, id, pos, view, completed;
+      head, id, pos, view, completed, before;
 
     if (currentHead === 0 || forceStart) {
       if (opts.start) {
@@ -115,10 +127,14 @@ exports = Class(Emitter, function (supr) {
     if (currentHead > 0) {
       head = tutorials[currentHead - 1];
       completed = currentHead >= length;
+      id = head.id;
+      pos = opts.positions[id];
+
+      if (pos.after) {
+        pos.after();
+      }
 
       if (head.finish_immediate || completed) {
-        id = head.id;
-        pos = opts.positions[id];
         view = this.views[pos.view.index || 0];
 
         view.finish(disable, function () {
@@ -139,6 +155,7 @@ exports = Class(Emitter, function (supr) {
     head = tutorials[currentHead++];
     id = head.id;
     pos = opts.positions[id];
+    before = pos.before;
     view = this.views[pos.view.index || 0].build(pos.view.params);
     view.once('next', bind(this, this.show));
 
@@ -186,6 +203,10 @@ exports = Class(Emitter, function (supr) {
           disable.setHandleEvents(false, true);
         }
 
+        if (before) {
+          before();
+        }
+
         view.show(merge({
           superview: opts.superview,
           x: x,
@@ -196,7 +217,7 @@ exports = Class(Emitter, function (supr) {
           action: action,
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
-        }, head));
+        }, head), head.timeout);
         this.setCompleted(opts.type, id,
           head.ms === false ? 0 : opts.milestone);
       } else if (opts.loop) {
@@ -218,25 +239,46 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.setCompleted = function (type, id, ms) {
-    storage.push(storageID, {
-      type: type,
-      id: id,
-      ms: ms
-    });
+    var completed_data = storage.get(storageID) || [],
+      curr_data = {
+        type: type,
+        id: id,
+        ms: ms
+      };
+
+    if (_.find(completed_data, function (curr_tut) {
+        return _.isEqual(curr_data, curr_tut);
+      })) {
+      return;
+    }
+
+    storage.push(storageID, curr_data);
+  };
+
+  this.getTutorialsHavingSameGroup = function (type, milestone, tut_id) {
+    var curr_data = (type && this.data[type]) ? this.data[type][milestone] : null,
+      curr_group = curr_data ? getGroupId(curr_data, tut_id) : null;
+
+    return curr_group ? getGroup(curr_data, curr_group) : [tut_id];
   };
 
   this.isCompleted = function (id, params) {
-    var data = storage.get(storageID) || [],
-      len = data.length,
+    var completed_data = storage.get(storageID) || [],
+      len = completed_data.length,
       opts = params || this.opts,
+      current_group_tuts = this.getTutorialsHavingSameGroup(opts.type, opts.milestone, id),
+      completed_groups = [],
       pos, i;
 
     for (i = 0; i < len; i++) {
-      pos = data[i];
+      pos = completed_data[i];
       if (pos.type === opts.type &&
           (pos.ms === 0 || pos.ms === opts.milestone) &&
-          pos.id === id) {
-        return true;
+          _.contains(current_group_tuts, pos.id)) {
+        completed_groups.push(pos.id);
+        if (current_group_tuts.length === completed_groups.length) {
+          return true;
+        }
       }
     }
     return false;
