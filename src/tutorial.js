@@ -239,7 +239,7 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.setCompleted = function (type, id, ms) {
-    var completed_data = completed_data = storage.get(storageID) || [],
+    var completed_data = storage.get(storageID) || [],
       curr_data = {
         type: type,
         id: id,
