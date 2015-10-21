@@ -22,7 +22,19 @@ exports = Class(Emitter, function (supr) {
   var currentHead = 0,
     tutorials = 0,
     storageID = 'tutorials',
-    cancel = false;
+    cancel = false,
+    getGroupId = function (data, tut_id) {
+      return _.find(data, function (tut_obj) {
+          return tut_obj.id === tut_id;
+        }).group;
+    },
+    getTutorialsWithGroup = function (data, group_id) {
+      return _.map(_.filter(data, function (tut_obj) {
+          return tut_obj.group === group_id;
+        }), function (tut_obj) {
+          return tut_obj.id;
+        });
+    };
 
   this.init = function (opts) {
     supr(this, 'init', []);
@@ -234,21 +246,19 @@ exports = Class(Emitter, function (supr) {
     });
   };
 
+  this.getTutorialsHavingSameGroup = function (type, milestone, tut_id) {
+    var curr_data = (type && this.data[type]) ? this.data[type][milestone] : null,
+      curr_group = curr_data ? getGroupId(curr_data, tut_id) : null;
+
+    return curr_group ? getTutorialsWithGroup(curr_data, curr_group) : [tut_id];
+  };
+
   this.isCompleted = function (id, params) {
     var completed_data = storage.get(storageID) || [],
       curr_opts = this.opts,
       len = completed_data.length,
       opts = params || this.opts,
-      curr_ms_data = (opts.type && this.data[opts.type]) ?
-        this.data[opts.type][opts.milestone] : null,
-      curr_group = curr_ms_data ? _.find(curr_ms_data, function (tut_obj) {
-        return tut_obj.id === id;
-      }).group : null,
-      group_tut_ids = curr_group ? _.map(_.filter(curr_ms_data, function (tut_obj) {
-        return tut_obj.group === curr_group;
-      }), function (tut_obj) {
-        return tut_obj.id;
-      }) : [id],
+      group_tut_ids = this.getTutorialsHavingSameGroup(opts.type, opts.milestone, id),
       completed_groups = [],
       canAdd = function (tut_id) {
         return _.contains(group_tut_ids, tut_id) &&
