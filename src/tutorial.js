@@ -255,7 +255,6 @@ exports = Class(Emitter, function (supr) {
 
   this.isCompleted = function (id, params) {
     var completed_data = storage.get(storageID) || [],
-      curr_opts = this.opts,
       len = completed_data.length,
       opts = params || this.opts,
       group_tut_ids = this.getTutorialsHavingSameGroup(opts.type, opts.milestone, id),
