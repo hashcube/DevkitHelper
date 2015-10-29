@@ -143,6 +143,7 @@ exports = Class(Emitter, function (supr) {
           }
           if (completed && opts.finish) {
             opts.finish();
+            view.emit('finished');
           }
         });
       }
