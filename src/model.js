@@ -87,7 +87,7 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.save = function () {
-    var id = this.get('id');
+    var id = this.get('id') || this.get('uid');
     if (id) {
       localStorage.setItem(id, JSON.stringify(this.get()));
     }
