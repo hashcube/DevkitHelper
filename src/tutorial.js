@@ -194,8 +194,8 @@ exports = Class(Emitter, function (supr) {
         pos = context[fun].apply(context, param);
       }
 
-      x = pos.x;
-      y = pos.y;
+      x = pos.x / pos.scale;
+      y = pos.y / pos.scale;
       if (onScreen(pos)) {
         x += (head.x * pos.scale || 0);
         y += (head.y * pos.scale || 0);
@@ -212,8 +212,9 @@ exports = Class(Emitter, function (supr) {
           superview: opts.superview,
           x: x,
           y: y,
-          width: pos.width,
-          height: pos.height,
+          width: pos.width / pos.scale,
+          height: pos.height / pos.scale,
+          view: context,
           text: head.text,
           action: action,
           next: (currentHead < length && !head.hideNext),
