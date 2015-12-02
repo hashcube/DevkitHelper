@@ -220,8 +220,10 @@ exports = Class(Emitter, function (supr) {
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
         }, head), head.timeout);
-        this.setCompleted(opts.type, id,
-          head.ms === false ? 0 : opts.milestone);
+        if (!head.always_show) {
+          this.setCompleted(opts.type, id,
+            head.ms === false ? 0 : opts.milestone);
+        }
       } else if (opts.loop) {
         this.build(opts);
       }
