@@ -210,8 +210,8 @@ exports = Class(Emitter, function (supr) {
 
         view.show(merge({
           superview: opts.superview,
-          x: x,
-          y: y,
+          x: x || 0,
+          y: y || 0,
           width: pos.width / pos.scale,
           height: pos.height / pos.scale,
           view: context,
