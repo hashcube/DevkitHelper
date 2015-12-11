@@ -3,7 +3,7 @@
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 
-import src.lib.underscore as _;
+import util.underscore as _;
 import math.util as GCMath;
 
 /* jshint ignore:end */
@@ -48,7 +48,6 @@ exports = new (Class(Emitter, function () {
         // ad dismissed(close or clicked on ad)
         ad_detail.onAdDismissed = function () {
           if (!isDismissed) {
-            // onAdClosed();
             this.emit("closed");
             isDismissed = true;
           }
@@ -76,25 +75,24 @@ exports = new (Class(Emitter, function () {
 
     // ones that have 0 are removed
     cumulative = function (obj) {
-      var c = 0,
-        n = {};
+      var sum = 0,
+        priority = {};
 
       _.each(obj, function (v, k) {
         if (v !== 0) {
-          c += v;
-          n[c] = k;
+          sum += v;
+          priority[sum] = k;
         }
       });
-      return [n, c];
+      return [priority, sum];
     };
 
   this.initialize = function (ad_desc) {
-      console.log(ad_desc);
     _.each(ad_desc.networks, function (ad_module) {
       ad_module.cache = ad_module.cacheInterstitial;
       ad_module.show = ad_module.showInterstitial;
     });
-    ad = ad_desc.ad;
+    ad = ad_desc.ratio;
     available_networks = cumulative(ad);
     selected_networks = available_networks[0];
     weight = available_networks[1];
