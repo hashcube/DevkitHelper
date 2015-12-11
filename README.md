@@ -12,7 +12,7 @@ Helper modules and functions for Game Closure devkit.
 * Modelpool - Re-use model objects.
 * Test - Expose private functions for unit testing.
 * Storage - Wrapper around HTML5 localStorage.
-* Admanager - Showing ads depending on your given condition
+* Admanager - Handling multiple ad networks and show ads according to the given priority
 
 ## License
 MIT
