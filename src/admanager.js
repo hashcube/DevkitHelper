@@ -26,7 +26,7 @@ exports = new (Class(Emitter, function () {
       ad = _.find(selected_networks, function (v, n) {
         return rand <= n ? v : false;
       });
-      if (!_.isUndefined(typeof ad_details[ad])) {
+      if (!_.isUndefined(ad_details[ad])) {
         chosen = ad_details[ad];
         chosen.cache();
 
