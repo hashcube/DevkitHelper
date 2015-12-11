@@ -26,14 +26,14 @@ exports = new (Class(Emitter, function () {
       ad = _.find(selected_networks, function (v, n) {
         return rand <= n ? v : false;
       });
-      if (typeof ad_details[ad] !== "undefined") {
+      if (!_.isUndefined(typeof ad_details[ad])) {
         chosen = ad_details[ad];
         chosen.cache();
 
         // if callback doesn't determine ad will be available,
         // assume it will be cached
         // TODO deal with ad networks not having callbacks
-        if (chosen.onAdAvailable === "undefined") {
+        if (_.isUndefined(chosen.onAdAvailable)) {
           chosen = ad;
         }
       } else if (--size > 0) {
