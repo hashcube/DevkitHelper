@@ -8,7 +8,7 @@ import util.ajax as ajax;
 exports = (function () {
   'use strict';
 
-  var err_url,
+  var err_url, uid,
     send_progress = false,
     storage_id = 'game_errors',
     obj = {},
@@ -31,7 +31,7 @@ exports = (function () {
       ajax.post({
         url: err_url,
         data: {
-          user: GC.app.user.get('uid'),
+          user: uid,
           device: device_info,
           errors: errors
         }
@@ -52,29 +52,31 @@ exports = (function () {
   obj.register = function (data) {
     err_url = data.url;
     device_info = data.device_info || {};
+    uid = data.uid || 'unknown';
 
     window.onerror = onError;
-    sendToServer();
   };
 
   obj.setDeviceInfo = function (info) {
     device_info = info;
-    sendToServer();
+  };
+
+  obj.setUID = function (usr_id) {
+    uid = usr_id;
   };
 
   // For logging error explicitly
   obj.error = function (err) {
-    var stack_url_data,
-      length;
+    var data, length;
 
     if (err instanceof Error) {
-      stack_url_data = err.stack.split('\n')[1];
-      stack_url_data = stack_url_data.substring(stack_url_data.lastIndexOf('(')
-        + 1, stack_url_data.lastIndexOf(')')).split(':');
-      length = stack_url_data.length;
+      data = err.stack.split('\n')[1];
+      data = data.substring(data.lastIndexOf('(') + 1,
+        data.lastIndexOf(')')).split(':');
+      length = data.length;
 
-      onError(err.toString(), stack_url_data[length - 3],
-        stack_url_data[length - 2], stack_url_data[length - 1]);
+      onError(err.toString(), data[length - 3],
+        data[length - 2], data[length - 1]);
     }
   };
 
