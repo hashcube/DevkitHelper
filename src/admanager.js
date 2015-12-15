@@ -5,7 +5,6 @@ import event.Emitter as Emitter;
 
 import util.underscore as _;
 import math.util as GCMath;
-import utils;
 
 /* jshint ignore:end */
 
