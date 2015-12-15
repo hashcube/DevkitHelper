@@ -1,8 +1,9 @@
-/* global navigator, storage, ajax */
+/* global navigator, storage, ajax, _ */
 
 /* jshint ignore: start */
 import .storage as storage;
 import util.ajax as ajax;
+import util.underscore as _;
 /* jshint ignore: end */
 
 exports = (function () {
@@ -12,6 +13,7 @@ exports = (function () {
     storage_id = 'game_errors',
     obj = {},
     device_info = {},
+    ignore_errors = [],
     onSend = function (err) {
       if (!err) {
         storage.del(storage_id);
@@ -34,13 +36,33 @@ exports = (function () {
       }, onSend)
     },
     onError = function (message, url, line, col) {
-      storage.push(storage_id, {
-        timestamp: Date.now(),
-        message: message,
-        url: url,
-        line: line,
-        col: col
+      var errors = storage.get(storage_id),
+        curr_time = Date.now(),
+        err;
+
+      if (_.contains(ignore_errors, message)) {
+        return;
+      }
+
+      err = _.find(errors, function (curr) {
+        return curr.message === message && curr.url === url &&
+          curr.line === line;
       });
+
+      if (err) {
+        ++err.count;
+        err.last_occured = curr_time;
+        storage.set(storage_id, errors);
+      } else {
+        storage.push(storage_id, {
+          timestamp: curr_time,
+          message: message,
+          url: url,
+          line: line,
+          col: col,
+          count: 1
+        });
+      }
 
       sendToServer();
     };
@@ -49,6 +71,7 @@ exports = (function () {
     err_url = data.url;
     device_info = data.device_info || {};
     uid = data.uid || 'unknown';
+    ignore_errors = data.ignore_errors || [];
 
     window.onerror = onError;
   };
