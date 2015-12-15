@@ -9,7 +9,6 @@ exports = (function () {
   'use strict';
 
   var err_url, uid,
-    send_progress = false,
     storage_id = 'game_errors',
     obj = {},
     device_info = {},
@@ -17,17 +16,14 @@ exports = (function () {
       if (!err) {
         storage.del(storage_id);
       }
-
-      send_progress = false;
     },
     sendToServer = function () {
       var errors = storage.get(storage_id) || [];
 
-      if (errors.length === 0 || !navigator.onLine || send_progress) {
+      if (errors.length === 0 || !navigator.onLine) {
         return;
       }
 
-      send_progress = true;
       ajax.post({
         url: err_url,
         data: {
