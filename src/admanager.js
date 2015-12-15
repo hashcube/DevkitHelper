@@ -5,7 +5,6 @@ import event.Emitter as Emitter;
 
 import util.underscore as _;
 import math.util as GCMath;
-
 /* jshint ignore:end */
 
 exports = new (Class(Emitter, function () {
@@ -27,9 +26,7 @@ exports = new (Class(Emitter, function () {
         return rand <= n ? v : false;
       });
       if (!_.isUndefined(ad_details[ad])) {
-        chosen = ad_details[ad];
-        chosen.cache();
-        chosen = ad;
+        ad_details[ad].cache();
 
         // if callback doesn't determine ad will be available,
         // assume it will be cached
@@ -46,9 +43,9 @@ exports = new (Class(Emitter, function () {
 
     registerCallbacks = function () {
         var onAdDismissed = bind(this, function () {
-            if (!isDismissed) {
-              this.emit("closed");
-              isDismissed = true;
+              if (!isDismissed) {
+                this.emit("closed");
+                isDismissed = true;
               }
             }),
           onAdAvailable = function (available_ad) {
