@@ -11,7 +11,7 @@ import math.util as GCMath;
 exports = new (Class(Emitter, function () {
   "use strict";
 
-  var isDismissed = false,
+  var is_dismissed = false,
     chosen = false,
     ad, available_networks, selected_networks, weight, size, isEligible,
     ad_details = {},
@@ -44,11 +44,11 @@ exports = new (Class(Emitter, function () {
 
     registerCallbacks = function () {
       var onAdDismissed = bind(this, function () {
-            if (!isDismissed) {
-                this.emit("closed");
-                isDismissed = true;
-            }
-          }),
+          if (!is_dismissed) {
+            this.emit("closed");
+            is_dismissed = true;
+          }
+        }),
         onAdAvailable = function (available_ad) {
           logger.log("{admanager} ad available", available_ad);
           chosen = available_ad;
@@ -61,10 +61,13 @@ exports = new (Class(Emitter, function () {
         };
 
       _.each(ad_details, function (ad_detail) {
+
         // ad dismissed(close or clicked on ad)
         ad_detail.onAdDismissed = onAdDismissed;
+
         // on ad available
         ad_detail.onAdAvailable = onAdAvailable;
+
         // on ad not available
         ad_detail.onAdNotAvailable = onAdNotAvailable;
       });
@@ -114,7 +117,7 @@ exports = new (Class(Emitter, function () {
     if (isEligible()) {
       chooseAd();
     }
-    isDismissed = false;
+    is_dismissed = false;
   };
 
   this.showAd = function () {
