@@ -43,22 +43,22 @@ exports = new (Class(Emitter, function () {
     },
 
     registerCallbacks = function () {
-        var onAdDismissed = bind(this, function () {
-              if (!isDismissed) {
+      var onAdDismissed = bind(this, function () {
+            if (!isDismissed) {
                 this.emit("closed");
                 isDismissed = true;
-              }
-            }),
-          onAdAvailable = function (available_ad) {
-            logger.log("{admanager} ad available", available_ad);
-            chosen = available_ad;
-          },
-          onAdNotAvailable = function () {
-            logger.log("{admanager} ad not available");
+            }
+          }),
+        onAdAvailable = function (available_ad) {
+          logger.log("{admanager} ad available", available_ad);
+          chosen = available_ad;
+        },
+        onAdNotAvailable = function () {
+          logger.log("{admanager} ad not available");
 
-            // ad not available, reset
-            chosen = false;
-          };
+          // ad not available, reset
+          chosen = false;
+        };
 
       _.each(ad_details, function (ad_detail) {
         // ad dismissed(close or clicked on ad)
