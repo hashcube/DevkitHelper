@@ -11,7 +11,7 @@ import math.util as GCMath;
 exports = new (Class(Emitter, function () {
   "use strict";
 
-  var isDismissed = false,
+  var is_dismissed = false,
     chosen = false,
     ad, available_networks, selected_networks, weight, size, isEligible,
     ad_details = {},
@@ -27,8 +27,7 @@ exports = new (Class(Emitter, function () {
         return rand <= n ? v : false;
       });
       if (!_.isUndefined(ad_details[ad])) {
-        chosen = ad_details[ad];
-        chosen.cache();
+        ad_details[ad].cache();
 
         // if callback doesn't determine ad will be available,
         // assume it will be cached
@@ -37,6 +36,7 @@ exports = new (Class(Emitter, function () {
           chosen = ad;
         }
       } else if (--size > 0) {
+
         // this case is mostly because the sdk hasn't been integrated,
         // so choose again
         chooseAd();
@@ -44,28 +44,33 @@ exports = new (Class(Emitter, function () {
     },
 
     registerCallbacks = function () {
-      _.each(ad_details, function (ad_detail) {
-        // ad dismissed(close or clicked on ad)
-        ad_detail.onAdDismissed = function () {
-          if (!isDismissed) {
+      var onAdDismissed = bind(this, function () {
+          if (!is_dismissed) {
             this.emit("closed");
-            isDismissed = true;
+            is_dismissed = true;
           }
-        };
-
-        // on ad available
-        ad_detail.onAdAvailable = function (available_ad) {
+        }),
+        onAdAvailable = function (available_ad) {
           logger.log("{admanager} ad available", available_ad);
           chosen = available_ad;
-        };
-
-        // on ad not available
-        ad_detail.onAdNotAvailable = function () {
+        },
+        onAdNotAvailable = function () {
           logger.log("{admanager} ad not available");
 
           // ad not available, reset
           chosen = false;
         };
+
+      _.each(ad_details, function (ad_detail) {
+
+        // ad dismissed(close or clicked on ad)
+        ad_detail.onAdDismissed = onAdDismissed;
+
+        // on ad available
+        ad_detail.onAdAvailable = onAdAvailable;
+
+        // on ad not available
+        ad_detail.onAdNotAvailable = onAdNotAvailable;
       });
     },
 
@@ -101,7 +106,7 @@ exports = new (Class(Emitter, function () {
     isEligible = ad_desc.isEligible;
 
     // subscribe to offer close
-    registerCallbacks();
+    registerCallbacks.apply(this)
   };
 
   this.updateWeight = function (updated_ad) {
@@ -113,14 +118,14 @@ exports = new (Class(Emitter, function () {
     if (isEligible()) {
       chooseAd();
     }
-    isDismissed = false;
+    is_dismissed = false;
   };
 
   this.showAd = function () {
+
     // assigning cached ad to chosen
-    chosen = ad;
     if (chosen) {
-      if (typeof ad_details[chosen] !== "undefined") {
+      if (!_.isUndefined(ad_details[ad])) {
         ad_details[chosen].show();
       }
       chosen = false;
