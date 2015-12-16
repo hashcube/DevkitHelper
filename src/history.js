@@ -23,8 +23,6 @@ exports = (function () {
     stack = [],
     // Flag to indicate backbutton action is being executed
     busy = false,
-    // Back button press count in menu screen
-    count = 0,
     // Set this to true to debug back button/history
     debug = false,
 
@@ -38,7 +36,6 @@ exports = (function () {
 
   // Function to add an action to the backbutton stack
   history.add = function (callback) {
-    count = 0;
     callback = callback || false;
     stack.push(callback);
     log('add');
@@ -59,7 +56,7 @@ exports = (function () {
     if (stack.length <= 0) {
       // Stack is empty. So user is in menu screen.
       // By returning false, user will be able to go back to the system.
-      return (count > 0 ? false: ++count);
+      return false;
     }
     // If another back button action isn't going on
     // and back button is not disabled
