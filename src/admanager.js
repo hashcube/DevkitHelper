@@ -36,6 +36,7 @@ exports = new (Class(Emitter, function () {
           chosen = ad;
         }
       } else if (--size > 0) {
+
         // this case is mostly because the sdk hasn't been integrated,
         // so choose again
         chooseAd();
@@ -121,6 +122,7 @@ exports = new (Class(Emitter, function () {
   };
 
   this.showAd = function () {
+
     // assigning cached ad to chosen
     if (chosen) {
       if (!_.isUndefined(ad_details[ad])) {
