@@ -85,7 +85,7 @@ exports = new (Class(Emitter, function () {
       return;
     }
     log('flag is ' + loading);
-    GC.app.removeListener("StackChanged", this.hide);
+    GC.app.removeListener('StackChanged', this.hide);
     view.removeFromSuperview();
     view.updateOpts({
       visible: false
