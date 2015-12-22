@@ -1,22 +1,25 @@
 {
-  "strict": true,
   "curly": true,
   "eqeqeq": true,
-  "immed": true,
-  "noempty": true,
-  "onevar": true,
-  "indent": 2,
-  "trailing": true,
-  "maxcomplexity": 15,
-  "maxlen": 80,
-  "maxdepth": 3,
-  "unused": true,
-  "undef": true,
-  "quotmark": "single",
   "globals": {
+    "GC": true,
     "Class": true,
     "merge": true,
     "bind" : true,
-    "exports": true
-  }
+    "exports": true,
+    "localStorage": true,
+    "CACHE": true,
+    "setTimeout": true,
+    "jsio": true,
+    "_": true
+  },
+  "latedef": true,
+  "maxcomplexity": 15,
+  "maxdepth": 3,
+  "noarg": true,
+  "nonbsp": true,
+  //"singleGroups": true,
+  "strict": true,
+  "undef": true,
+  "unused": true
 }
