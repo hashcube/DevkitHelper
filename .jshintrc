@@ -18,7 +18,7 @@
   "maxdepth": 3,
   "noarg": true,
   "nonbsp": true,
-  //"singleGroups": true,
+  "singleGroups": true,
   "strict": true,
   "undef": true,
   "unused": true
