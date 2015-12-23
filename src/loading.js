@@ -11,8 +11,6 @@
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 
-import ui.resource.Image as Image;
-import ui.ImageView as ImageView;
 import ui.resource.loader as loader;
 
 import util.underscore as _;
@@ -26,11 +24,12 @@ exports = new (Class(Emitter, function () {
 
   var debug = false,
     loading = false,
-    log = function(msg) {
-      if(debug) {
+    log = function (msg) {
+      if (debug) {
         console.log('loading:', msg);
       }
     },
+
     // folders to pre-load
     folders,
     view;
@@ -48,10 +47,9 @@ exports = new (Class(Emitter, function () {
   };
 
   // method to show loading screen
-  this.show = function(preload, callback) {
+  this.show = function (preload, callback) {
     // disable back button
     history.setBusy();
-
     this.emit('show');
     view.updateOpts({
       superview: GC.app,
@@ -59,10 +57,10 @@ exports = new (Class(Emitter, function () {
       visible: true
     });
 
-    if(preload && _.has(folders, preload)) {
+    if (preload && _.has(folders, preload)) {
       log('preload ' + preload);
       loading = true;
-      loader.preload(folders[preload], function() {
+      loader.preload(folders[preload], function () {
         loading = false;
       });
     } else {
@@ -71,23 +69,23 @@ exports = new (Class(Emitter, function () {
     }
 
     // method to hide loading screen
-    GC.app.once('StackChanged', this.hide);
+    GC.app.on('StackChanged', this.hide);
 
-    if(callback) {
+    if (callback) {
       _.defer(callback);
     }
   };
 
   // No need to call this, unless you want to hide manually.
-  this.hide = function() {
+  this.hide = function () {
     // if images are still loading, call this function again
-    if(loading === true) {
+    if (loading === true) {
       log('flag is ' + loading);
       setTimeout(this.hide, 1);
       return;
     }
-
     log('flag is ' + loading);
+    GC.app.removeListener('StackChanged', this.hide);
     view.removeFromSuperview();
     view.updateOpts({
       visible: false
