@@ -3,9 +3,7 @@
 /* jshint ignore:start */
 import AudioManager;
 import util.underscore as _;
-
 /* jshint ignore:end */
-
 
 exports = (function () {
   'use strict';
