@@ -15,10 +15,14 @@ exports = (function () {
 
   return {
 
-    init: function (bound_width, bound_height, orientation,
-        config_tablet_scale) {
-      style = JSON.parse(CACHE['resources/styles/' + orientation + '.json']);
-      if (orientation === 'portrait') {
+    init: function (properties) {
+      var bound_width = properties.bound_width,
+        bound_height = properties.bound_height,
+        orientation = properties.orientation;
+
+      style = JSON.parse(CACHE['resources/styles/' + properties.orientation +
+        '.json']);
+      if (properties.orientation === 'portrait') {
         base_width = bound_width;
         base_height = device_height * (bound_width / device_width);
         scale = device_width / bound_width;
@@ -30,8 +34,8 @@ exports = (function () {
       this.base_height = base_height;
       this.base_width = base_width;
       this.scale = scale;
-      this.tablet_scale = device.isTablet ? config_tablet_scale :
-        (device.isPhablet ? 0.9 : 1);
+      this.tablet_scale = device.isTablet ? properties.tablet :
+        (device.isPhablet ? properties.phablet : 1);
       this.scale_height = scale_height = base_height / bound_height;
       this.sec_scale = base_height < bound_height ? scale_height : 1;
       this.orientation = orientation;
@@ -46,7 +50,6 @@ exports = (function () {
         extend = this.get(val.extend);
         delete val.extend;
       }
-
       return merge(prop || {}, val, extend || {});
     }
   };
