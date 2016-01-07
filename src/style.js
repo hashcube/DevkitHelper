@@ -15,14 +15,14 @@ exports = (function () {
 
   return {
 
-    init: function (properties) {
-      var bound_width = properties.bound_width,
-        bound_height = properties.bound_height,
-        orientation = properties.orientation;
+    init: function (opts) {
+      var bound_width = opts.bound_width,
+        bound_height = opts.bound_height,
+        orientation = opts.orientation;
 
-      style = JSON.parse(CACHE['resources/styles/' + properties.orientation +
+      style = JSON.parse(CACHE['resources/styles/' + orientation +
         '.json']);
-      if (properties.orientation === 'portrait') {
+      if (orientation === 'portrait') {
         base_width = bound_width;
         base_height = device_height * (bound_width / device_width);
         scale = device_width / bound_width;
@@ -34,8 +34,8 @@ exports = (function () {
       this.base_height = base_height;
       this.base_width = base_width;
       this.scale = scale;
-      this.tablet_scale = device.isTablet ? properties.tablet :
-        (device.isPhablet ? properties.phablet : 1);
+      this.tablet_scale = device.isTablet ? opts.tablet :
+        (device.isPhablet ? opts.phablet : 1);
       this.scale_height = scale_height = base_height / bound_height;
       this.sec_scale = base_height < bound_height ? scale_height : 1;
       this.orientation = orientation;
