@@ -38,13 +38,13 @@ exports = (function () {
 
     play: function (file) {
       var music_file = music[file],
-        sound_file = effect[file];
+        effect_file = effect[file];
 
       if (music_file && music_file.background) {
         background_music = file;
       }
 
-      if (music_file || sound_file) {
+      if (music_file || effect_file) {
         sound.play(file);
       }
     },
