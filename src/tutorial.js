@@ -6,12 +6,13 @@
  *
  */
 
-/* global _, setTimeout, clearTimeout, device, Emitter, storage */
+/* global _, setTimeout, clearTimeout, device, Emitter, storage, history */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 import device;
 
+import .history as history;
 import .storage as storage;
 import util.underscore as _;
 /* jshint ignore:end */
@@ -34,7 +35,8 @@ exports = Class(Emitter, function (supr) {
         }), function (tut_obj) {
           return tut_obj.id;
         });
-    };
+    },
+    curr_view = null;
 
   this.init = function (opts) {
     supr(this, 'init', []);
@@ -74,6 +76,11 @@ exports = Class(Emitter, function (supr) {
       if (opts.before) {
         opts.before();
       }
+
+      if (opts.on_cancel) {
+        history.add(opts.on_cancel);
+      }
+
       timeout = pos.view.timeout;
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         _.isNumber(timeout) ? timeout : 1000);
@@ -85,7 +92,7 @@ exports = Class(Emitter, function (supr) {
     clearTimeout(this.timeoutID);
   };
 
-  this.add = function (id, force, cb) {
+  this.add = function (id, force, cb, opts) {
     var tut = tutorials,
       len = tut.length,
       data;
@@ -94,6 +101,7 @@ exports = Class(Emitter, function (supr) {
       data = this.data[id];
 
       if (data) {
+        this.opts = merge(opts || {}, this.opts);
         _.last(data).cb = cb;
         tut.push.apply(tut, data);
 
@@ -149,6 +157,10 @@ exports = Class(Emitter, function (supr) {
       }
 
       if (completed) {
+        if (opts.on_cancel) {
+          history.pop();
+        }
+
         return;
       }
     }
@@ -180,7 +192,7 @@ exports = Class(Emitter, function (supr) {
             };
 
           return _.find(cords, function (curr) {
-            return inRange(device.screen.width, curr[0]) && inRange(device.screen.height, curr[1])
+            return inRange(device.screen.width, curr[0]) && inRange(device.screen.height, curr[1]);
           });
         };
 
@@ -220,6 +232,7 @@ exports = Class(Emitter, function (supr) {
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
         }, head), head.timeout);
+        curr_view = view;
         if (!head.always_show) {
           this.setCompleted(opts.type, id,
             head.ms === false ? 0 : opts.milestone);
@@ -286,6 +299,39 @@ exports = Class(Emitter, function (supr) {
       }
     }
     return false;
+  };
+
+  this.pause = function () {
+    if (!curr_view || !curr_view.getSuperview()) {
+      return;
+    }
+
+    if (curr_view.onPause) {
+      curr_view.onPause();
+    }
+
+    curr_view.setHandleEvents(false, true);
+    curr_view.hide();
+  };
+
+  this.resume = function () {
+    var opts = this.opts;
+
+    if (!curr_view || !curr_view.getSuperview()) {
+      return;
+    }
+
+    if (opts.on_cancel) {
+      history.add(opts.on_cancel);
+    }
+
+    curr_view.setHandleEvents(true, false);
+
+    if (curr_view.onResume) {
+      curr_view.onResume();
+    }
+
+    curr_view.show();
   };
 
   this.clean = function () {
