@@ -39,7 +39,13 @@ exports = (function () {
       this.scale_height = scale_height = base_height / bound_height;
       this.sec_scale = base_height < bound_height ? scale_height : 1;
       this.orientation = orientation;
-      GC.app.view.style.scale = scale;
+      GC.app.view.updateOpts({
+        x: 0,
+        y: 0,
+        width: base_width,
+        height: base_height,
+        scale: scale
+      });
     },
 
     get: function (key, prop) {
