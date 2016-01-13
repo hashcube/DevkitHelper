@@ -35,8 +35,7 @@ exports = Class(Emitter, function (supr) {
         }), function (tut_obj) {
           return tut_obj.id;
         });
-    },
-    curr_view = null;
+    };
 
   this.init = function (opts) {
     supr(this, 'init', []);
@@ -232,7 +231,6 @@ exports = Class(Emitter, function (supr) {
           next: (currentHead < length && !head.hideNext),
           ok: !!head.ok
         }, head), head.timeout);
-        curr_view = view;
         if (!head.always_show) {
           this.setCompleted(opts.type, id,
             head.ms === false ? 0 : opts.milestone);
@@ -302,33 +300,17 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.pause = function () {
-    if (!curr_view || !curr_view.getSuperview()) {
-      return;
-    }
-
-    if (curr_view.onPause) {
-      curr_view.onPause();
-    }
-
-    curr_view.hide();
+    this.emit('pause');
   };
 
   this.resume = function () {
-    var opts = this.opts;
+    var opts = this.opts || {};
 
-    if (!curr_view || !curr_view.getSuperview()) {
-      return;
-    }
+    this.emit('resume');
 
     if (opts.on_cancel) {
       history.add(opts.on_cancel);
     }
-
-    if (curr_view.onResume) {
-      curr_view.onResume();
-    }
-
-    curr_view.show();
   };
 
   this.clean = function () {
