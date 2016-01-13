@@ -310,7 +310,6 @@ exports = Class(Emitter, function (supr) {
       curr_view.onPause();
     }
 
-    curr_view.setHandleEvents(false, true);
     curr_view.hide();
   };
 
@@ -324,8 +323,6 @@ exports = Class(Emitter, function (supr) {
     if (opts.on_cancel) {
       history.add(opts.on_cancel);
     }
-
-    curr_view.setHandleEvents(true, false);
 
     if (curr_view.onResume) {
       curr_view.onResume();
