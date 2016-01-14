@@ -151,21 +151,28 @@ exports = Class(Emitter, function (supr) {
         view = this.views[pos.view.index || 0];
 
         view.finish(disable, function () {
+
           if (head.cb) {
             head.cb();
           }
-          if (completed && opts.finish) {
-            opts.finish();
-            view.emit('finished');
+
+          if (completed) {
+            history.resetBusy();
+
+            if (opts.finish) {
+              opts.finish();
+              view.emit('finished');
+            }
+
+            if (opts.on_cancel) {
+              history.pop();
+            }
           }
         });
       }
 
       if (completed) {
-        if (opts.on_cancel) {
-          history.pop();
-        }
-
+        history.setBusy();
         return;
       }
     }
