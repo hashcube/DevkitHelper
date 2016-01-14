@@ -77,7 +77,13 @@ exports = Class(Emitter, function (supr) {
       }
 
       if (opts.on_cancel) {
-        history.add(opts.on_cancel);
+        history.add(bind(this, function (cb) {
+          if (this.timeoutID) {
+            this.cancel();
+          }
+
+          opts.on_cancel(cb);
+        }));
       }
 
       timeout = pos.view.timeout;
