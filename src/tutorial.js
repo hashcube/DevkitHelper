@@ -157,8 +157,6 @@ exports = Class(Emitter, function (supr) {
           }
 
           if (completed) {
-            history.resetBusy();
-
             if (opts.finish) {
               opts.finish();
               view.emit('finished');
@@ -172,7 +170,6 @@ exports = Class(Emitter, function (supr) {
       }
 
       if (completed) {
-        history.setBusy();
         return;
       }
     }
