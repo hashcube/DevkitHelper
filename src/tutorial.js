@@ -151,6 +151,10 @@ exports = Class(Emitter, function (supr) {
         view = this.views[pos.view.index || 0];
 
         view.finish(disable, function () {
+          if (completed && opts.on_cancel) {
+            history.pop();
+          }
+
           if (head.cb) {
             head.cb();
           }
@@ -162,10 +166,6 @@ exports = Class(Emitter, function (supr) {
       }
 
       if (completed) {
-        if (opts.on_cancel) {
-          history.pop();
-        }
-
         return;
       }
     }
