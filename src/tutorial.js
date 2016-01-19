@@ -320,6 +320,7 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.clean = function () {
+    this.cancel();
     _.each(this.views, bind(this, function (view) {
       view.removeAllListeners('next');
       if (view.clean) {
