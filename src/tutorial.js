@@ -154,6 +154,7 @@ exports = Class(Emitter, function (supr) {
           // history pop should happen first.
           if (completed && opts.on_cancel) {
             history.pop();
+            delete opts.on_cancel;
           }
 
           if (head.cb) {
