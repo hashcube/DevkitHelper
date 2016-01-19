@@ -71,20 +71,28 @@ exports = (function () {
   };
 
   obj.timeout = function (callback, interval, fast_forward) {
-    var timout_val = setTimeout(callback, mock ? mock : interval);
+    var timeout_cb = callback,
+      timeout_val;
 
     if (fast_forward) {
-      history.add(function (cb) {
-        clearTimeout(timout_val);
+      timeout_cb = function () {
+        history.pop();
         callback();
+      };
+
+      history.add(function (cb) {
+        clearTimeout(timeout_val);
 
         if (cb && cb.fire) {
           cb.fire();
         }
+        callback();
       });
     }
 
-    return timout_val;
+    timeout_val = setTimeout(timeout_cb, mock ? mock : interval);
+
+    return timeout_val;
   };
 
   obj.mock = function (interval) {
