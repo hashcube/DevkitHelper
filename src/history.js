@@ -24,11 +24,11 @@ exports = (function () {
     // Flag to indicate backbutton action is being executed
     busy = false,
     // Set this to true to debug back button/history
-    debug = true,
+    debug = false,
 
     log = function (msg) {
       if (debug) {
-        console.log('GAME_TEST history:', msg,
+        console.log('history:', msg,
           '| Busy:', busy,
           '| Stack:', stack.length, stack);
       }
