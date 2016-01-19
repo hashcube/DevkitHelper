@@ -1,8 +1,9 @@
-/* global _, setInterval, clearInterval, setTimeout, test */
+/* global _, setInterval, clearInterval, setTimeout, clearTimeout, test, history */
 
 /* jshint ignore:start */
 import util.underscore as _;
 import .test as test;
+import .history as history;
 /* jshint ignore:end */
 
 exports = (function () {
@@ -69,8 +70,21 @@ exports = (function () {
     return !!listeners[tag];
   };
 
-  obj.timeout = function (callback, interval) {
-    return setTimeout(callback, mock ? mock : interval);
+  obj.timeout = function (callback, interval, fast_forward) {
+    var timout_val = setTimeout(callback, mock ? mock : interval);
+
+    if (fast_forward) {
+      history.add(function (cb) {
+        clearTimeout(timout_val);
+        callback();
+
+        if (cb && cb.fire) {
+          cb.fire();
+        }
+      });
+    }
+
+    return timout_val;
   };
 
   obj.mock = function (interval) {
