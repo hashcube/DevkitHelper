@@ -151,6 +151,7 @@ exports = Class(Emitter, function (supr) {
         view = this.views[pos.view.index || 0];
 
         view.finish(disable, function () {
+          // history pop should happen first.
           if (completed && opts.on_cancel) {
             history.pop();
           }
@@ -158,6 +159,7 @@ exports = Class(Emitter, function (supr) {
           if (head.cb) {
             head.cb();
           }
+
           if (completed && opts.finish) {
             opts.finish();
             view.emit('finished');
