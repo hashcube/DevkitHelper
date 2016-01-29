@@ -15,11 +15,9 @@ import util.underscore as _;
 exports = function (key, params, language) {
   'use strict';
   var path = 'resources/languages/',
-    supported = ['en', 'es', 'de', 'ru', 'ko', 'zh'],
     localize, pluralize, parser;
 
-  language = language || GC.app.language;
-  language = _.contains(supported, language) ?  language : 'en';
+  language = language || GC.app.language || 'en';
 
   localize = function (key, params, language) {
     var store, string;
@@ -37,8 +35,8 @@ exports = function (key, params, language) {
       if (string) {
         return parser(string, params);
       }
-    } else if (language !== 'en_US') {
-      return localize(key, params, 'en_US');
+    } else if (language !== 'en') {
+      return localize(key, params, 'en');
     }
     return key;
   };
