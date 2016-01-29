@@ -38,7 +38,6 @@ exports = (function () {
   history.add = function (callback) {
     callback = callback || false;
     stack.push(callback);
-    history.length = stack.length;
     log('add');
   };
 
@@ -50,14 +49,13 @@ exports = (function () {
   // A callback will be passed when the popped function is called,
   // that need's to be called manually from the running function,
   //using fire() method
-  history.release = function () {
+  history.release = function (cb) {
     var action, callback;
 
     log('release');
     if (stack.length <= 0) {
       // Stack is empty. So user is in menu screen.
       // By returning false, user will be able to go back to the system.
-      history.length = stack.length;
       return false;
     }
     // If another back button action isn't going on
@@ -72,9 +70,9 @@ exports = (function () {
         busy = false;
         log('callback');
         callback.clear();
+        cb();
       });
       action = stack.pop();
-      history.length = stack.length;
       action(callback);
     }
   };
@@ -88,7 +86,6 @@ exports = (function () {
     for (i = 0; i < count; i++) {
       stack.pop();
     }
-    history.length = stack.length;
     log('pop');
   };
 
@@ -97,7 +94,6 @@ exports = (function () {
   history.empty = function () {
     // empty stack
     stack.length = 0;
-    history.length = stack.length;
     log('empty');
   };
 
@@ -113,8 +109,9 @@ exports = (function () {
     log('resetBusy');
   };
 
-  history.length = stack.length;
-
+  history.getLength = function () {
+    return stack.length;
+  };
 
   // set back button handler
   device.setBackButtonHandler(history.release);
