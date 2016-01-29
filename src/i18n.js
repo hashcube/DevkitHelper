@@ -35,8 +35,8 @@ exports = function (key, params, language) {
       if (string) {
         return parser(string, params);
       }
-    } else if (language !== 'en_US') {
-      return localize(key, params, 'en_US');
+    } else if (language !== 'en') {
+      return localize(key, params, 'en');
     }
     return key;
   };
