@@ -15,9 +15,11 @@ import util.underscore as _;
 exports = function (key, params, language) {
   'use strict';
   var path = 'resources/languages/',
+    supported = ['en', 'es', 'de', 'ru', 'ko', 'zh'],
     localize, pluralize, parser;
 
   language = language || GC.app.language || 'en';
+  language = _.contains(supported, language) ?  language : 'en';
 
   localize = function (key, params, language) {
     var store, string;
