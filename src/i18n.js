@@ -18,7 +18,7 @@ exports = function (key, params, language) {
     supported = ['en', 'es', 'de', 'ru', 'ko', 'zh'],
     localize, pluralize, parser;
 
-  language = language || GC.app.language || 'en';
+  language = language || GC.app.language;
   language = _.contains(supported, language) ?  language : 'en';
 
   localize = function (key, params, language) {
