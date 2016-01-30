@@ -49,7 +49,7 @@ exports = (function () {
   // A callback will be passed when the popped function is called,
   // that need's to be called manually from the running function,
   //using fire() method
-  history.release = function () {
+  history.release = function (cb) {
     var action, callback;
 
     log('release');
@@ -70,6 +70,7 @@ exports = (function () {
         busy = false;
         log('callback');
         callback.clear();
+        cb();
       });
       action = stack.pop();
       action(callback);
@@ -106,6 +107,10 @@ exports = (function () {
   history.resetBusy = function () {
     busy = false;
     log('resetBusy');
+  };
+
+  history.getLength = function () {
+    return stack.length;
   };
 
   // set back button handler
