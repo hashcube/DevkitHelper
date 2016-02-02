@@ -1,9 +1,8 @@
-/* global _, setInterval, clearInterval, setTimeout, clearTimeout, test, history */
+/* global _, setInterval, clearInterval, setTimeout, clearTimeout, test */
 
 /* jshint ignore:start */
 import util.underscore as _;
 import .test as test;
-import .history as history;
 /* jshint ignore:end */
 
 exports = (function () {
@@ -11,10 +10,12 @@ exports = (function () {
 
   var mock = null,
     listeners = {},
+    timeout_listeners = {},
     obj = {};
 
   obj.clear = function () {
     obj.unregister(_.keys(listeners));
+    obj.clearTimeout(_.keys(timeout_listeners));
   };
 
   obj.unregister = function (tags) {
@@ -70,29 +71,45 @@ exports = (function () {
     return !!listeners[tag];
   };
 
-  obj.timeout = function (callback, interval, fast_forward) {
-    var timeout_cb = callback,
-      timeout_val;
+  obj.hasTimeout = function (tag) {
+    return !!timeout_listeners[tag];
+  };
 
-    if (fast_forward) {
-      timeout_cb = function () {
-        history.pop();
-        callback();
-      };
+  obj.clearTimeout = function (tags) {
+    tags = _.isArray(tags) ? tags : [tags];
+    _.each(tags, function (tag) {
+      if (timeout_listeners[tag]) {
+        clearTimeout(timeout_listeners[tag].timer);
+        delete timeout_listeners[tag];
+      }
+    });
+  };
 
-      history.add(function (cb) {
-        clearTimeout(timeout_val);
+  obj.timeout = function (tag, callback, interval) {
+    var cb;
 
-        if (cb && cb.fire) {
-          cb.fire();
-        }
-        callback();
-      });
+    if (!tag) {
+      return setTimeout(callback,  mock ? mock : interval);
     }
 
-    timeout_val = setTimeout(timeout_cb, mock ? mock : interval);
+    if (!timeout_listeners[tag]) {
+      cb = function () {
+        obj.clearTimeout(tag);
+        callback();
+      };
+      timeout_listeners[tag] = {
+        callback: cb,
+        timer: setTimeout(cb,  mock ? mock : interval)
+      };
+    }
+  };
 
-    return timeout_val;
+  obj.callImmediate = function (tag) {
+    var listener = timeout_listeners[tag];
+
+    if (listener) {
+      timeout_listeners[tag].callback();
+    }
   };
 
   obj.mock = function (interval) {
