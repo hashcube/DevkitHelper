@@ -1,4 +1,4 @@
-/* global _, setInterval, clearInterval, setTimeout, test */
+/* global _, setInterval, clearInterval, setTimeout, clearTimeout, test */
 
 /* jshint ignore:start */
 import util.underscore as _;
@@ -9,19 +9,21 @@ exports = (function () {
   'use strict';
 
   var mock = null,
-    listeners = {},
+    listeners_interval = {},
+    listeners_timeout = {},
     obj = {};
 
   obj.clear = function () {
-    obj.unregister(_.keys(listeners));
+    obj.unregister(_.keys(listeners_interval));
+    obj.clearTimeout(_.keys(listeners_timeout));
   };
 
   obj.unregister = function (tags) {
     tags = _.isArray(tags) ? tags : [tags];
     _.each(tags, function (tag) {
-      if (listeners[tag]) {
-        clearInterval(listeners[tag].timer);
-        delete listeners[tag];
+      if (listeners_interval[tag]) {
+        clearInterval(listeners_interval[tag].timer);
+        delete listeners_interval[tag];
       }
     });
   };
@@ -29,8 +31,8 @@ exports = (function () {
   obj.register = function (tag, callback, interval) {
     interval = mock ? mock : interval;
 
-    if (!listeners[tag]) {
-      listeners[tag] = {
+    if (!listeners_interval[tag]) {
+      listeners_interval[tag] = {
         callback: callback,
         interval: interval,
         timer: setInterval(callback, interval),
@@ -42,7 +44,7 @@ exports = (function () {
   obj.pause = function (tags) {
     tags = _.isArray(tags) ? tags : [tags];
     _.each(tags, function (tag) {
-      var listener = listeners[tag];
+      var listener = listeners_interval[tag];
 
       // no need to clear interval if timer is not running
       if (listener && listener.is_running) {
@@ -57,7 +59,7 @@ exports = (function () {
 
     tags = _.isArray(tags) ? tags : [tags];
     _.each(tags, function (tag) {
-      listener = listeners[tag];
+      listener = listeners_interval[tag];
       if (listener && !listener.is_running) {
         listener.timer = setInterval(listener.callback, listener.interval);
         listener.is_running = true;
@@ -66,11 +68,48 @@ exports = (function () {
   };
 
   obj.has = function (tag) {
-    return !!listeners[tag];
+    return !!listeners_interval[tag];
   };
 
-  obj.timeout = function (callback, interval) {
-    return setTimeout(callback, mock ? mock : interval);
+  obj.hasTimeout = function (tag) {
+    return !!listeners_timeout[tag];
+  };
+
+  obj.clearTimeout = function (tags) {
+    tags = _.isArray(tags) ? tags : [tags];
+    _.each(tags, function (tag) {
+      if (listeners_timeout[tag]) {
+        clearTimeout(listeners_timeout[tag].timer);
+        delete listeners_timeout[tag];
+      }
+    });
+  };
+
+  obj.timeout = function (tag, callback, milliseconds) {
+    var cb;
+
+    if (!tag) {
+      return setTimeout(callback,  mock ? mock : milliseconds);
+    }
+
+    if (!listeners_timeout[tag]) {
+      cb = function () {
+        delete listeners_timeout[tag];
+        callback();
+      };
+      listeners_timeout[tag] = {
+        callback: cb,
+        timer: setTimeout(cb,  mock ? mock : milliseconds)
+      };
+    }
+  };
+
+  obj.callImmediate = function (tag) {
+    var listener = listeners_timeout[tag];
+
+    if (listener) {
+      listeners_timeout[tag].callback();
+    }
   };
 
   obj.mock = function (interval) {
@@ -78,7 +117,7 @@ exports = (function () {
   };
 
   test.prepare(obj, {
-    listeners: listeners
+    listeners_interval: listeners_interval
   });
 
   return obj;

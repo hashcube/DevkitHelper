@@ -6,12 +6,13 @@
  *
  */
 
-/* global _, setTimeout, clearTimeout, device, Emitter, storage */
+/* global _, setTimeout, clearTimeout, device, Emitter, storage, history */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
 import device;
 
+import .history as history;
 import .storage as storage;
 import util.underscore as _;
 /* jshint ignore:end */
@@ -74,6 +75,17 @@ exports = Class(Emitter, function (supr) {
       if (opts.before) {
         opts.before();
       }
+
+      if (opts.on_cancel) {
+        history.add(bind(this, function (cb) {
+          if (this.timeoutID) {
+            this.cancel();
+          }
+
+          opts.on_cancel(cb);
+        }));
+      }
+
       timeout = pos.view.timeout;
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         _.isNumber(timeout) ? timeout : 1000);
@@ -85,7 +97,7 @@ exports = Class(Emitter, function (supr) {
     clearTimeout(this.timeoutID);
   };
 
-  this.add = function (id, force, cb) {
+  this.add = function (id, force, cb, opts) {
     var tut = tutorials,
       len = tut.length,
       data;
@@ -94,6 +106,7 @@ exports = Class(Emitter, function (supr) {
       data = this.data[id];
 
       if (data) {
+        this.opts = merge(opts || {}, this.opts);
         _.last(data).cb = cb;
         tut.push.apply(tut, data);
 
@@ -138,9 +151,16 @@ exports = Class(Emitter, function (supr) {
         view = this.views[pos.view.index || 0];
 
         view.finish(disable, function () {
+          // history pop should happen first.
+          if (completed && opts.on_cancel) {
+            history.pop();
+            delete opts.on_cancel;
+          }
+
           if (head.cb) {
             head.cb();
           }
+
           if (completed && opts.finish) {
             opts.finish();
             view.emit('finished');
@@ -180,7 +200,7 @@ exports = Class(Emitter, function (supr) {
             };
 
           return _.find(cords, function (curr) {
-            return inRange(device.screen.width, curr[0]) && inRange(device.screen.height, curr[1])
+            return inRange(device.screen.width, curr[0]) && inRange(device.screen.height, curr[1]);
           });
         };
 
@@ -288,7 +308,22 @@ exports = Class(Emitter, function (supr) {
     return false;
   };
 
+  this.pause = function () {
+    this.emit('pause');
+  };
+
+  this.resume = function () {
+    var opts = this.opts || {};
+
+    this.emit('resume');
+
+    if (opts.on_cancel) {
+      history.add(opts.on_cancel);
+    }
+  };
+
   this.clean = function () {
+    this.cancel();
     _.each(this.views, bind(this, function (view) {
       view.removeAllListeners('next');
       if (view.clean) {
