@@ -70,7 +70,7 @@ exports = (function () {
         busy = false;
         log('callback');
         callback.clear();
-        if (cb) {
+        if (_.isFunction(cb)) {
           cb();
         }
       });
