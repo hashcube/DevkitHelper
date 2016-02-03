@@ -70,7 +70,9 @@ exports = (function () {
         busy = false;
         log('callback');
         callback.clear();
-        cb();
+        if (cb) {
+          cb();
+        }
       });
       action = stack.pop();
       action(callback);
