@@ -93,8 +93,12 @@ exports = (function () {
     }
 
     if (!listeners_timeout[tag]) {
-      cb = function () {
+      cb = function (clear) {
+        if (clear) {
+          clearTimeout(listeners_timeout[tag].timer);
+        }
         delete listeners_timeout[tag];
+
         callback();
       };
       listeners_timeout[tag] = {
@@ -108,7 +112,7 @@ exports = (function () {
     var listener = listeners_timeout[tag];
 
     if (listener) {
-      listeners_timeout[tag].callback();
+      listeners_timeout[tag].callback(true);
     }
   };
 
