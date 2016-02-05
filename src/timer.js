@@ -94,7 +94,9 @@ exports = (function () {
 
     if (!listeners_timeout[tag]) {
       cb = function () {
+        clearTimeout(listeners_timeout[tag].timer);
         delete listeners_timeout[tag];
+
         callback();
       };
       listeners_timeout[tag] = {
