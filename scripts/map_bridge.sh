@@ -17,6 +17,7 @@ convert -append $1 $2 \
         -page +$(($map_width/2-$overlap_width/2))+$crop_start $3 \
         -flatten \
         -crop ${overlap_width}x${overlap_height}+0+${crop_start} \
+        +repage \
         ${output}
 
 echo "Output:" $output
