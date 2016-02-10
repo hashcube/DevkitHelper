@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ $# -lt 1 ]
 then
     echo "Usage : $0 -e comingsoon.png -b bridge.png map1.png map2.png ..."

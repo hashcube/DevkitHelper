@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ $# -lt 2 ]
 then
     echo "Usage : $0 map.png comingsoon.png (optional)output.png"

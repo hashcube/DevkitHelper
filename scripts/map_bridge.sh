@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ $# -lt 3 ]
 then
     echo "Usage : $0 map1.png map2.png bridge.png (optional)output.png"

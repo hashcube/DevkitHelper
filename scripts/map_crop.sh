@@ -1,3 +1,5 @@
+#!/bin/sh
+
 function check_compress () {
   while getopts ":cn" opt; do
     case $opt in
