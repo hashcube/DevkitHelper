@@ -27,7 +27,9 @@ exports.setup = function () {
 
   global.localStorage = {
     setItem: function () {},
-    getItem: function () {}
+    getItem: function () {},
+    removeItem: function () {},
+    clear: function () {}
   };
 
   global.GC.app = {};
