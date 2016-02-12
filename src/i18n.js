@@ -32,8 +32,11 @@ exports = function (key, params, language) {
 
     if (store) {
       string = store[key];
-      return string ? parser(string, params) :
-        localize(key, params, 'en');
+
+      // if string not present and language not english, send english translation
+      // if string not present and language is english, send key
+      return string ? parser(string, params) : language === "en" ?
+        key: localize(key, params, 'en');
     } else if (language !== 'en') {
       return localize(key, params, 'en');
     }
