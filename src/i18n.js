@@ -28,6 +28,7 @@ exports = function (key, params, language) {
     try {
       store = JSON.parse(CACHE[path + language + '.json']);
     } catch (err) {
+      logger.warn(language + ' does not exist, switching to en');
     }
 
     if (store && store[key]) {
