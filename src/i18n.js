@@ -20,20 +20,23 @@ exports = function (key, params, language) {
   language = language || GC.app.language || 'en';
 
   localize = function (key, params, language) {
-    var store, string;
+    var store, result;
 
     params = params || [];
 
-    // if language.json doesn't exists fallback to en_US
+    // if language.json doesn't exists fallback to en
     try {
       store = JSON.parse(CACHE[path + language + '.json']);
     } catch (err) {
+      logger.warn(language + ' does not exist, switching to en');
     }
 
-    if (store) {
-      string = store[key];
-      return string ? parser(string, params) :
-        localize(key, params, 'en');
+    if (store && store[key]) {
+      result = parser(store[key], params);
+    }
+
+    if (result) {
+      return result;
     } else if (language !== 'en') {
       return localize(key, params, 'en');
     }

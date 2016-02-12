@@ -1,4 +1,4 @@
-/* global require, global, window, document */
+/* global require, global, window */
 
 /* @license
  * This file is part of the Game Closure SDK.
@@ -16,7 +16,6 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 var jsdom = require('jsdom').jsdom,
-  mockCanvas = require('./mockCanvas'),
   mockImage = require('./mockImage'),
   mockAudio = require('./mockAudio'),
   done = false;
@@ -24,30 +23,19 @@ var jsdom = require('jsdom').jsdom,
 exports.setup = function () {
   'use strict';
 
-  var createElement;
-
   if (done) {
     return;
   }
 
   global.Image = mockImage.Image;
   global.Audio = mockAudio.Audio;
-  global.window = jsdom().parentWindow;
+  global.window = jsdom().defaultView;
   global.document = window.document;
 
   global.HTMLCanvasElement = function () {};
 
-  createElement = document.createElement;
-  document.createElement = function (element) {
-    if (element === 'canvas') {
-      return new mockCanvas.Canvas();
-    }
-    return createElement.apply(document, arguments);
-  };
-
+  window.navigator.language = 'en-US';
   global.navigator = window.navigator;
-
-  //navigator.userAgent = 'TeaLeaf';
 
   done = true;
 };

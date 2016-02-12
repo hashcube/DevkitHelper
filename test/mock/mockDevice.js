@@ -22,8 +22,18 @@ require('./mockDOM').setup();
 exports.setup = function () {
   'use strict';
 
-  jsio('import device as device');
+  var mockCanvas = require('./mockCanvas'),
+    cache_get;
 
+  jsio('import device as device');
+  cache_get = device.get;
+  device.get = function (module) {
+    if (module === 'Canvas') {
+      return mockCanvas.Canvas;
+    } else {
+      return cache_get(module);
+    }
+  };
   device.width = 640;
   device.height = 480;
   device.canResize = false;

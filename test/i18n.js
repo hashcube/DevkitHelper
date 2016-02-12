@@ -14,6 +14,9 @@ var init = function () {
       hair: 'I have {{$1 | 0:no hair | 1:a hair | 2: 2 hairs | 3:a lot of hair}} left on my head.',
       sheep: 'I have $1 {{$1 | 1:sheep}}.',
       fail: 'I have $1 {{$1 | message}}'
+    }),
+    'resources/languages/de.json': JSON.stringify({
+      score: 'German score'
     })
   };
   GC.app = {
@@ -36,6 +39,22 @@ describe('Localization', function  () {
 
   it('Should return sent data', function () {
     assert.equal('hello world', i18n('with_str', ['hello']));
+  });
+
+  it('Should return key', function () {
+    assert.equal('key', i18n('key'));
+  });
+
+  it('Should return translated string', function () {
+    assert.equal('German score', i18n('score', [], 'de'));
+  });
+
+  it('Should return English string for non existant key', function () {
+    assert.equal('hello world', i18n('with_str', ['hello'], 'de'));
+  });
+
+  it('Should return English string for non existant language', function () {
+    assert.equal('hello world', i18n('with_str', ['hello'], 'kr'));
   });
 });
 
