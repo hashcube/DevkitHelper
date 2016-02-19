@@ -143,25 +143,25 @@ exports = new (Class(Emitter, function () {
   };
 
   this.showVideoAd = function(source) {
-    var flag = false;
+    var flag;
 
-    _.each(ad_details, function (ad_module) {
+    flag = _.find(ad_details, function (ad_module) {
       if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
         ad_module.obj.showVideoAd(source);
-        flag = true;
+        return true;
       }
     });
     return flag;
   };
 
   this.isVideoAdAvailable = function() {
-    var flag = false;
+    var flag;
 
-    _.each(ad_details, function (ad_module) {
+    flag = _.find(ad_details, function (ad_module) {
       if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
-        flag = true;
+        return true;
       }
     });
-    return flag;
+    return (flag ? true : false);
   }
 }))();
