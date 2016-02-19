@@ -62,7 +62,7 @@ exports = new (Class(Emitter, function () {
         };
 
       _.each(ad_details, function (ad_detail) {
-        if(ad_detail.type === 'interstitial') {
+        if (ad_detail.type === 'interstitial') {
           // ad dismissed(close or clicked on ad)
           ad_detail.obj.onAdDismissed = onAdDismissed;
 
@@ -95,9 +95,14 @@ exports = new (Class(Emitter, function () {
 
   this.initialize = function (ad_desc) {
     _.each(ad_desc.networks, function (ad_module) {
-      if (ad_module.type === 'interstitial') {
-        ad_module.obj.cache = ad_module.obj.cacheInterstitial;
-        ad_module.obj.show = ad_module.obj.showInterstitial;
+      switch (ad_module.type) {
+        case "interstitial":
+          ad_module.obj.cache = ad_module.obj.cacheInterstitial;
+          ad_module.obj.show = ad_module.obj.showInterstitial;
+          break;
+        case "video":
+          ad_module.obj.onVideoClosed = ad_module.cb;
+          break;
       }
     });
     ad = ad_desc.ratio;
@@ -138,14 +143,25 @@ exports = new (Class(Emitter, function () {
   };
 
   this.showVideoAd = function(source) {
-    ad_details.supersonic.obj.showRVAd(source);
-  };
+    var flag = false;
 
-  this.registerVideoAdCallback = function(callback) {
-    ad_details.supersonic.obj.onVideoClosed = callback;
+    _.each(ad_details, function (ad_module) {
+      if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
+        ad_module.obj.showVideoAd(source);
+        flag = true;
+      }
+    });
+    return flag;
   };
 
   this.isVideoAdAvailable = function() {
-    return ad_details.supersonic.obj.isRVAdAvailable();
+    var flag = false;
+
+    _.each(ad_details, function (ad_module) {
+      if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
+        flag = true;
+      }
+    });
+    return flag;
   }
 }))();
