@@ -93,7 +93,7 @@ exports = new (Class(Emitter, function () {
       return [priority, sum];
     };
 
-  this.initialize = function (ad_desc) {
+  this.initialize = function (ad_desc, user_id) {
     _.each(ad_desc.networks, function (ad_module) {
       switch (ad_module.type) {
         case "interstitial":
@@ -101,6 +101,7 @@ exports = new (Class(Emitter, function () {
           ad_module.obj.show = ad_module.obj.showInterstitial;
           break;
         case "video":
+          ad_module.obj.initVideoAd(user_id);
           ad_module.obj.onVideoClosed = ad_module.cb;
           break;
       }
