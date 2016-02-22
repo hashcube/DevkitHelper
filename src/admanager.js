@@ -27,7 +27,7 @@ exports = new (Class(Emitter, function () {
         return rand <= n ? v : false;
       });
       if (!_.isUndefined(ad_details[ad])) {
-        ad_details[ad].cache();
+        ad_details[ad].obj.cache();
 
         // if callback doesn't determine ad will be available,
         // assume it will be cached
@@ -62,15 +62,16 @@ exports = new (Class(Emitter, function () {
         };
 
       _.each(ad_details, function (ad_detail) {
+        if (ad_detail.type === 'interstitial') {
+          // ad dismissed(close or clicked on ad)
+          ad_detail.obj.onAdDismissed = onAdDismissed;
 
-        // ad dismissed(close or clicked on ad)
-        ad_detail.onAdDismissed = onAdDismissed;
+          // on ad available
+          ad_detail.obj.onAdAvailable = onAdAvailable;
 
-        // on ad available
-        ad_detail.onAdAvailable = onAdAvailable;
-
-        // on ad not available
-        ad_detail.onAdNotAvailable = onAdNotAvailable;
+          // on ad not available
+          ad_detail.obj.onAdNotAvailable = onAdNotAvailable;
+        }
       });
     },
 
@@ -92,10 +93,18 @@ exports = new (Class(Emitter, function () {
       return [priority, sum];
     };
 
-  this.initialize = function (ad_desc) {
+  this.initialize = function (ad_desc, user_id) {
     _.each(ad_desc.networks, function (ad_module) {
-      ad_module.cache = ad_module.cacheInterstitial;
-      ad_module.show = ad_module.showInterstitial;
+      switch (ad_module.type) {
+        case "interstitial":
+          ad_module.obj.cache = ad_module.obj.cacheInterstitial;
+          ad_module.obj.show = ad_module.obj.showInterstitial;
+          break;
+        case "video":
+          ad_module.obj.initVideoAd(user_id);
+          ad_module.obj.onVideoClosed = ad_module.cb;
+          break;
+      }
     });
     ad = ad_desc.ratio;
     available_networks = cumulative(ad);
@@ -133,4 +142,27 @@ exports = new (Class(Emitter, function () {
     }
     return false;
   };
+
+  this.showVideoAd = function(source) {
+    var flag;
+
+    flag = _.find(ad_details, function (ad_module) {
+      if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
+        ad_module.obj.showVideoAd(source);
+        return true;
+      }
+    });
+    return flag;
+  };
+
+  this.isVideoAdAvailable = function() {
+    var flag;
+
+    flag = _.find(ad_details, function (ad_module) {
+      if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
+        return true;
+      }
+    });
+    return (flag ? true : false);
+  }
 }))();
