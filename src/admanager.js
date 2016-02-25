@@ -136,8 +136,9 @@ exports = new (Class(Emitter, function () {
 
     // assigning cached ad to chosen
     if (chosen) {
-      if (!_.isUndefined(ad_details[ad])) {
-        ad_details[chosen].show();
+
+      if (!_.isUndefined(ad_details[chosen])) {
+        ad_details[chosen].obj.show();
       }
       chosen = false;
       return true;
