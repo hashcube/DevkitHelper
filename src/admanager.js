@@ -13,7 +13,8 @@ exports = new (Class(Emitter, function () {
 
   var is_dismissed = false,
     chosen = false,
-    ad, available_networks, selected_networks, weight, size, isEligible,
+    ad, available_networks, selected_networks, weight, size,
+    isEligibleForInterstitial, isEligibleForVideo,
     ad_details = {},
 
     /* private functions */
@@ -112,10 +113,11 @@ exports = new (Class(Emitter, function () {
     weight = available_networks[1];
     ad_details = ad_desc.networks;
     size = _.size(ad_details);
-    isEligible = ad_desc.isEligible;
+    isEligibleForInterstitial = ad_desc.isEligibleForInterstitial;
+    isEligibleForVideo = ad_desc.isEligibleForVideo;
 
     // subscribe to offer close
-    registerCallbacks.apply(this)
+    registerCallbacks.apply(this);
   };
 
   this.updateWeight = function (updated_ad) {
@@ -124,7 +126,7 @@ exports = new (Class(Emitter, function () {
 
   this.cacheAd = function () {
     // is eligible for ad
-    if (isEligible()) {
+    if (isEligibleForInterstitial()) {
       chooseAd();
     }
     is_dismissed = false;
@@ -147,7 +149,7 @@ exports = new (Class(Emitter, function () {
     var flag;
 
     flag = _.find(ad_details, function (ad_module) {
-      if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
+      if (ad_module.type === "video" && ad_module.obj.isVideoAdAvailable()) {
         ad_module.obj.showVideoAd(source);
         return true;
       }
@@ -159,10 +161,10 @@ exports = new (Class(Emitter, function () {
     var flag;
 
     flag = _.find(ad_details, function (ad_module) {
-      if (ad_module.type == "video" && ad_module.obj.isVideoAdAvailable()) {
+      if (ad_module.type === "video" && ad_module.obj.isVideoAdAvailable() && isEligibleForVideo()) {
         return true;
       }
     });
-    return (flag ? true : false);
-  }
+    return flag ? true : false;
+  };
 }))();
