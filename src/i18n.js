@@ -12,7 +12,7 @@
 
 import util.underscore as _;
 
-var lang_data, current_lang;
+var lang_data = {};
 
 exports = function (key, params, language) {
   'use strict';
@@ -22,19 +22,22 @@ exports = function (key, params, language) {
   language = language || GC.app.language || 'en';
 
   localize = function (key, params, language) {
-    var store = lang_data,
+    var store = lang_data[language],
       result;
 
     params = params || [];
 
     // if language.json doesn't exists fallback to en
-    if (!store || current_lang != language) {
+    if (!store) {
       try {
-        lang_data = null;
         store = JSON.parse(CACHE[path + language + '.json']);
       } catch (err) {
         logger.warn(language + ' does not exist, switching to en');
       }
+    }
+
+    if (store && !lang_data[language]) {
+      lang_data[language] = store;
     }
 
     if (store && store[key]) {
@@ -42,10 +45,6 @@ exports = function (key, params, language) {
     }
 
     if (result) {
-      if (!lang_data) {
-        lang_data = store;
-        current_lang = language;
-      }
       return result;
     } else if (language !== 'en') {
       return localize(key, params, 'en');
