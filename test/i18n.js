@@ -34,11 +34,32 @@ describe('Localization', function  () {
   });
 
   it('Should return score', function () {
-    assert.equal('Score', i18n('score'));
+    assert.equal('Score', i18n('score', [], 'en'));
+  });
+
+  it('Should not call JSON.parse', function (done) {
+    var cache = JSON.parse;
+
+    JSON.parse = function () {
+      done('error: parse called');
+    }
+    i18n('score', [], 'en');
+    done();
+    JSON.parse = cache;
+  });
+
+  it('Should call JSON.parse', function (done) {
+    var cache = JSON.parse;
+
+    JSON.parse = function () {
+      JSON.parse = cache;
+      done();
+    }
+    i18n('score', [], 'de');
   });
 
   it('Should return sent data', function () {
-    assert.equal('hello world', i18n('with_str', ['hello']));
+    assert.equal('hello world', i18n('with_str', ['hello'], 'en'));
   });
 
   it('Should return key', function () {
