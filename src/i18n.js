@@ -27,17 +27,12 @@ exports = function (key, params, language) {
 
     params = params || [];
 
-    // if language.json doesn't exists fallback to en
     if (!store) {
       try {
-        store = JSON.parse(CACHE[path + language + '.json']);
+        lang_data[language] = store = JSON.parse(CACHE[path + language + '.json']);
       } catch (err) {
         logger.warn(language + ' does not exist, switching to en');
       }
-    }
-
-    if (store && !lang_data[language]) {
-      lang_data[language] = store;
     }
 
     if (store && store[key]) {
@@ -47,6 +42,7 @@ exports = function (key, params, language) {
     if (result) {
       return result;
     } else if (language !== 'en') {
+      /* if language.json doesn't exists fallback to en */
       return localize(key, params, 'en');
     }
     return key;
