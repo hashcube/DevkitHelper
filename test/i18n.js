@@ -37,9 +37,10 @@ describe('Localization', function  () {
     assert.equal('Score', i18n('score', [], 'en'));
   });
 
-  it('Should not call JSON.parse', function (done) {
+  it('Should not call JSON.parse a second time', function (done) {
     var cache = JSON.parse;
 
+    i18n('score', [], 'en');
     JSON.parse = function () {
       done('error: parse called');
     }
@@ -51,6 +52,7 @@ describe('Localization', function  () {
   it('Should call JSON.parse', function (done) {
     var cache = JSON.parse;
 
+    i18n('score', [], 'en');
     JSON.parse = function () {
       JSON.parse = cache;
       done();
