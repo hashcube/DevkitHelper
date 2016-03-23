@@ -6,6 +6,12 @@ jsio('import device');
 var prepare = function (orientation, tablet, phablet) {
   'use strict';
 
+  GC.app = {
+    view: {
+      updateOpts: function () {}
+    }
+  };
+
   CACHE = {
     'resources/data/config.json': JSON.stringify({
       orientation: orientation,
@@ -30,7 +36,14 @@ var prepare = function (orientation, tablet, phablet) {
   device.isTablet = tablet || false;
   device.isPhablet = phablet || false;
 
-  jsio('import src.modules.style as style');
+  jsio('import src.style as style');
+  style.init({
+    bound_width: 100,
+    bound_height: 100,
+    orientation: orientation,
+    tablet: 0.7,
+    phablet: 0.9
+  });
 };
 
 describe('Style:', function  () {

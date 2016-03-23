@@ -54,9 +54,12 @@ exports = (function () {
 
       if (val.extend) {
         extend = this.get(val.extend);
-        delete val.extend;
       }
-      return merge(prop || {}, val, extend || {});
+
+      prop = prop || {};
+      merge(prop, val, extend || {});
+      delete prop.extend;
+      return prop;
     }
   };
 })();
