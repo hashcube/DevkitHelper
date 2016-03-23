@@ -103,7 +103,6 @@ exports = new (Class(Emitter, function () {
           break;
         case "video":
           ad_module.obj.initVideoAd(user_id);
-          ad_module.obj.onVideoClosed = ad_module.cb;
           break;
       }
     });
@@ -146,11 +145,12 @@ exports = new (Class(Emitter, function () {
     return false;
   };
 
-  this.showVideoAd = function(source) {
+  this.showVideoAd = function(source, cb) {
     var flag;
 
     flag = _.find(ad_details, function (ad_module) {
       if (ad_module.type === "video" && ad_module.obj.isVideoAdAvailable()) {
+        ad_module.obj.onVideoClosed = cb;
         ad_module.obj.showVideoAd(source);
         return true;
       }
