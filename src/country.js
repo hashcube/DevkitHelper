@@ -18,6 +18,6 @@ exports = (function (cb) {
       cb(res.countryCode);
     } else {
       cb('UNKNOWN');
-      }
+    }
   });
 });
