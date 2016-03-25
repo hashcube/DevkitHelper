@@ -1,4 +1,4 @@
-/* global GCMath, logger,  _, Emitter */
+/* global GCMath, logger,  _, Emitter, navigator */
 
 /* jshint ignore:start */
 import event.Emitter as Emitter;
@@ -162,7 +162,8 @@ exports = new (Class(Emitter, function () {
     var flag;
 
     flag = _.find(ad_details, function (ad_module) {
-      if (ad_module.type === "video" && ad_module.obj.isVideoAdAvailable() && isEligibleForVideo()) {
+      if (ad_module.type === "video" && navigator.onLine &&
+        ad_module.obj.isVideoAdAvailable() && isEligibleForVideo()) {
         return true;
       }
     });
