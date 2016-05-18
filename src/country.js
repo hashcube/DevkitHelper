@@ -11,7 +11,7 @@ exports = (function (cb) {
   // When we have multiple services this can be a array to iterate through
   var service_url = [
                     ['country_code', 'http://freegeoip.net/json/'],
-                    ['countryCode', 'http://ip-api.com/ejson']
+                    ['countryCode', 'http://ip-api.com/json']
                     ],
     it = 0,
     ajax_req = function () {
@@ -20,9 +20,13 @@ exports = (function (cb) {
       }, function (err, res) {
         if (res && _.has(res, service_url[it][0])) {
           cb(res[service_url[it][0]]);
-        } else {
+          return;
+        } else if (it < service_url.length - 1){
           ++it;
           ajax_req();
+        } else {
+          cb("UNKNOWN");
+          return;
         }
       });
     };
