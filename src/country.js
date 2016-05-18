@@ -28,7 +28,7 @@ exports = (function (callback) {
       if (!country && pop) {
         pop.fire();
       } else {
-        callback(country || 'unknown');
+        callback(country || 'UNKNOWN');
       }
     };
 
