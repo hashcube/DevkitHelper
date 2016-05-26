@@ -49,7 +49,7 @@ exports = (function () {
   // A callback will be passed when the popped function is called,
   // that need's to be called manually from the running function,
   //using fire() method
-  history.release = function (cb) {
+  history.release = function (cb, force) {
     var action, callback;
 
     log('release');
@@ -75,7 +75,15 @@ exports = (function () {
         }
       });
       action = stack.pop();
-      action(callback);
+      action(callback, force);
+    }
+  };
+
+  history.releaseAll = function (cb) {
+    if (stack.length > 0) {
+      history.release(bind(history, history.releaseAll, cb), true);
+    } else {
+      cb();
     }
   };
 
