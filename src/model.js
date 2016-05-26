@@ -187,7 +187,7 @@ exports = Class(Emitter, function (supr) {
           fire: bind(this, function (val, cancel) {
             // call pending callbacks from the next event.
 
-            var current = this._callbacks[evnt],
+            var current = this._callbacks[evnt] || {},
               last = current[i];
 
             // if we are chaining a second signal, that mapping cb will be added
