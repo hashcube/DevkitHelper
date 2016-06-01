@@ -19,7 +19,7 @@ exports = function (key, params, language) {
   var path = 'resources/languages/',
     localize, pluralize, parser;
 
-  language = language || navigator.language || GC.app.language || 'en';
+  language = language || navigator.language.split('-')[0] || GC.app.language || 'en';
 
   localize = function (key, params, language) {
     var store = lang_data[language],
