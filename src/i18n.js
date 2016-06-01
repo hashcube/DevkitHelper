@@ -17,9 +17,11 @@ var lang_data = {};
 exports = function (key, params, language) {
   'use strict';
   var path = 'resources/languages/',
+    nav_language = null,
     localize, pluralize, parser;
 
-  language = language || navigator.language.split('-')[0] || 'en';
+  nav_language = navigator.language ? navigator.language.split('-')[0] : null;
+  language = language || nav_language || 'en';
 
   localize = function (key, params, language) {
     var store = lang_data[language],
