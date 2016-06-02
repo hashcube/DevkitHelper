@@ -41,7 +41,7 @@ exports = Class(ImageView, function (supr) {
       },
 
       getSize = function(max) {
-        return max-(middle/2);
+        return max - middle / 2;
       },
       overlay;
 
@@ -209,7 +209,7 @@ exports = Class(ImageView, function (supr) {
       then(bind(this, function() {
         var y = opts.y/scale;
 
-        y += (y+height+middle > baseHeight ? -middle : middle);
+        y += y+height+middle > baseHeight ? -middle : middle;
         this.updateOpts({
           superview: opts.superview,
           visible: true,

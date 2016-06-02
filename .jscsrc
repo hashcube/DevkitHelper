@@ -25,7 +25,8 @@
   "disallowTrailingWhitespace": true,
   "disallowUnusedParams": true,
   "disallowYodaConditions": true,
-  "excludeFiles": [".tmp_staging/src/data/**"],
+  "excludeFiles": ["node_modules/**", ".tmp_staging/resources/data/map_tiles.js", .tmp_staging/src/lib/**",
+    ".tmp_staging/src/gc/**"],
   "maximumLineLength": 80,
   "maxErrors": 100,
   "requireAlignedMultilineParams": 2,
@@ -72,5 +73,5 @@
   "requireVarDeclFirst": true,
   "validateIndentation": 2,
   "validateLineBreaks": "LF",
-  "validateQuoteMarks": "\""
+  "validateQuoteMarks": "'"
 }

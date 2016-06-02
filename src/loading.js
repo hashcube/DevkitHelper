@@ -19,7 +19,7 @@ import .history as history;
 import .test as test;
 /* jshint ignore:end */
 
-exports = new (Class(Emitter, function () {
+exports = new (Class(Emitter, function () { // jshint ignore:line
   'use strict';
 
   var debug = false,

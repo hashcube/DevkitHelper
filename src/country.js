@@ -1,4 +1,4 @@
-/* global _ */
+/* global _, ajax, Callback */
 
 /* jshint ignore:start */
 import lib.Callback as Callback;
@@ -6,7 +6,7 @@ import util.underscore as _;
 import util.ajax as ajax;
 /* jshint ignore:end */
 
-exports = (function (callback) {
+exports = (function (callback) { // jshint ignore:line
   "use strict";
 
   var cbs = [],

@@ -1,6 +1,8 @@
-/* global jsio, it, before, describe, assert, CACHE:true, GC:true, i18n */
+/* global jsio, it, before, describe, assert, CACHE:true, GC:true, i18n,
+  util_test, navigator */
 
 jsio('import DevkitHelper.i18n as i18n');
+jsio('import test.lib.util as util_test');
 
 var init = function () {
   'use strict';
@@ -29,6 +31,22 @@ describe('Localization', function  () {
 
   before(init);
 
+  it('Should set de value based on navigator', function () {
+    util_test.removeFromJSIOCache('i18n');
+    navigator.language = 'de';
+    jsio('import DevkitHelper.i18n as i18n');
+
+    assert.strictEqual('German score', i18n('score'));
+  });
+
+  it('Should set en value based on navigator', function () {
+    util_test.removeFromJSIOCache('i18n');
+    navigator.language = 'en';
+    jsio('import DevkitHelper.i18n as i18n');
+
+    assert.strictEqual('Score', i18n('score'));
+  });
+
   it('Should return undefined', function () {
     assert.equal(undefined, i18n());
   });
@@ -43,7 +61,7 @@ describe('Localization', function  () {
     i18n('score', [], 'en');
     JSON.parse = function () {
       done('error: parse called');
-    }
+    };
     i18n('score', [], 'en');
     done();
     JSON.parse = cache;
@@ -52,11 +70,15 @@ describe('Localization', function  () {
   it('Should call JSON.parse', function (done) {
     var cache = JSON.parse;
 
+    util_test.removeFromJSIOCache('i18n');
+    navigator.language = '';
+    jsio('import DevkitHelper.i18n as i18n');
+
     i18n('score', [], 'en');
     JSON.parse = function () {
       JSON.parse = cache;
       done();
-    }
+    };
     i18n('score', [], 'de');
   });
 

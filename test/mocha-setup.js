@@ -15,6 +15,8 @@
  */
  /* jshint ignore:end */
 
+/* global global, process, require */
+
 global.assert = require('assert');
 
 global.CONFIG = {
