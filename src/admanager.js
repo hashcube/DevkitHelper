@@ -8,7 +8,7 @@ import math.util as GCMath;
 
 /* jshint ignore:end */
 
-exports = new (Class(Emitter, function () {
+exports = new (Class(Emitter, function () { // jshint ignore:line
   "use strict";
 
   var is_dismissed = false,

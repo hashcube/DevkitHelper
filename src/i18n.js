@@ -8,18 +8,21 @@
  *
  */
 
-/* global CACHE, GC */
+/* global CACHE, navigator, logger */
 
+/* jshint ignore:start */
 import util.underscore as _;
+/* jshint ignore:end */
 
 var lang_data = {};
 
 exports = function (key, params, language) {
   'use strict';
   var path = 'resources/languages/',
+    nav_language = navigator.language || '',
     localize, pluralize, parser;
 
-  language = language || navigator.language.split('-')[0] || 'en';
+  language = language || nav_language.split('-')[0] || 'en';
 
   localize = function (key, params, language) {
     var store = lang_data[language],

@@ -217,8 +217,8 @@ exports = Class(Emitter, function (supr) {
       x = pos.x / pos.scale;
       y = pos.y / pos.scale;
       if (onScreen(pos)) {
-        x += (head.x * pos.scale || 0);
-        y += (head.y * pos.scale || 0);
+        x += head.x * pos.scale || 0;
+        y += head.y * pos.scale || 0;
 
         if (disable) {
           disable.setHandleEvents(false, true);
@@ -237,7 +237,7 @@ exports = Class(Emitter, function (supr) {
           view: context,
           text: head.text,
           action: action,
-          next: (currentHead < length && !head.hideNext),
+          next: currentHead < length && !head.hideNext,
           ok: !!head.ok
         }, head), head.timeout);
         if (!head.always_show) {
@@ -280,7 +280,7 @@ exports = Class(Emitter, function (supr) {
   };
 
   this.getTutorialsHavingSameGroup = function (type, milestone, tut_id) {
-    var curr_data = (type && this.data[type]) ? this.data[type][milestone] : null,
+    var curr_data = type && this.data[type] ? this.data[type][milestone] : null,
       curr_group = curr_data ? getGroupId(curr_data, tut_id) : null;
 
     return curr_group ? getGroup(curr_data, curr_group) : [tut_id];

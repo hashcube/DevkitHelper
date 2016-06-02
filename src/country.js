@@ -1,4 +1,4 @@
-/* global _ */
+/* global _, ajax, Callback */
 
 /* jshint ignore:start */
 import lib.Callback as Callback;

@@ -1,4 +1,4 @@
-/* global jsio, it, before, describe, assert, timer, after, afterEach,
+/* global jsio, it, describe, assert, timer,
   beforeEach, setInterval:true, clearInterval:true, _ */
 
 jsio('import DevkitHelper.timer as timer');

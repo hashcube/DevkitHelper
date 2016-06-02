@@ -72,5 +72,5 @@
   "requireVarDeclFirst": true,
   "validateIndentation": 2,
   "validateLineBreaks": "LF",
-  "validateQuoteMarks": "\""
+  "validateQuoteMarks": "\"
 }

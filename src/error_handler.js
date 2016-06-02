@@ -1,4 +1,4 @@
-/* global navigator, storage, ajax, _ */
+/* global window, navigator, storage, ajax, _ */
 
 /* jshint ignore: start */
 import .storage as storage;
@@ -33,7 +33,7 @@ exports = (function () {
           device: device_info,
           errors: errors
         }
-      }, onSend)
+      }, onSend);
     },
     onError = function (message, url, line, col) {
       var errors = storage.get(storage_id),
