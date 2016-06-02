@@ -6,7 +6,7 @@ import util.underscore as _;
 import util.ajax as ajax;
 /* jshint ignore:end */
 
-exports = (function (callback) { // jshint ignore:line
+exports = (function (callback) {
   "use strict";
 
   var cbs = [],

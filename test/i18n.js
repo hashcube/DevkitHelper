@@ -41,6 +41,14 @@ describe('Localization', function  () {
 
   it('Should set en value based on navigator', function () {
     util_test.removeFromJSIOCache('i18n');
+    navigator.language = null;
+    jsio('import DevkitHelper.i18n as i18n');
+
+    assert.strictEqual('Score', i18n('score'));
+  });
+
+  it('Should set en value based on navigator', function () {
+    util_test.removeFromJSIOCache('i18n');
     navigator.language = 'en';
     jsio('import DevkitHelper.i18n as i18n');
 
