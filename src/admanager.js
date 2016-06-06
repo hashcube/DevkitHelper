@@ -63,7 +63,7 @@ exports = new (Class(Emitter, function () {
         };
 
       _.each(ad_details, function (ad_detail) {
-        if (ad_detail.type === 'interstitial') {
+        if (_.contains(ad_detail.type, 'interstitial')) {
           // ad dismissed(close or clicked on ad)
           ad_detail.obj.onAdDismissed = onAdDismissed;
 
@@ -96,14 +96,14 @@ exports = new (Class(Emitter, function () {
 
   this.initialize = function (ad_desc, user_id) {
     _.each(ad_desc.networks, function (ad_module) {
-      switch (ad_module.type) {
-        case "interstitial":
-          ad_module.obj.cache = ad_module.obj.cacheInterstitial;
-          ad_module.obj.show = ad_module.obj.showInterstitial;
-          break;
-        case "video":
-          ad_module.obj.initVideoAd(user_id);
-          break;
+      if(_.contains(ad_module.type, "interstitial")) {
+        ad_module.obj.cache = ad_module.obj.cacheInterstitial;
+        ad_module.obj.show = ad_module.obj.showInterstitial;
+        if(typeof ad_module.obj.initInterstitial === "function") {
+          ad_module.obj.initInterstitial(user_id);
+        }
+      } else {
+        ad_module.obj.initVideoAd(user_id);
       }
     });
     ad = ad_desc.ratio;
@@ -149,7 +149,7 @@ exports = new (Class(Emitter, function () {
     var flag;
 
     flag = _.find(ad_details, function (ad_module) {
-      if (ad_module.type === "video" && ad_module.obj.isVideoAdAvailable()) {
+      if (_.contains(ad_module.type, "video") && ad_module.obj.isVideoAdAvailable()) {
         ad_module.obj.onVideoClosed = cb;
         ad_module.obj.showVideoAd(source);
         return true;
@@ -162,7 +162,7 @@ exports = new (Class(Emitter, function () {
     var flag;
 
     flag = _.find(ad_details, function (ad_module) {
-      if (ad_module.type === "video" && navigator.onLine &&
+      if (_.contains(ad_module.type, "video") && navigator.onLine &&
         ad_module.obj.isVideoAdAvailable() && isEligibleForVideo()) {
         return true;
       }
