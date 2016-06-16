@@ -102,7 +102,8 @@ exports = new (Class(Emitter, function () { // jshint ignore:line
         if(typeof ad_module.obj.initInterstitial === "function") {
           ad_module.obj.initInterstitial(user_id);
         }
-      } else {
+      }
+      if(_.contains(ad_module.type, "video")) {
         ad_module.obj.initVideoAd(user_id);
       }
     });
