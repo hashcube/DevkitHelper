@@ -6,7 +6,7 @@ import util.underscore as _;
 import util.ajax as ajax;
 /* jshint ignore:end */
 
-exports = (function (callback) {
+exports = function (callback) {
   "use strict";
 
   var cbs = [],
@@ -15,10 +15,10 @@ exports = (function (callback) {
       ['http://freegeoip.net/json/','country_code']
     ],
 
-     request = function (url, key, next) {
+    request = function (url, key, next) {
       cbs.shift();
       ajax.get({url: url}, function (err, res) {
-        next(_.has(res, key) ? res[key] : null);
+        next(res && _.has(res, key) ? res[key] : null);
       });
     },
 
@@ -40,5 +40,4 @@ exports = (function (callback) {
   });
 
   cbs[0].fire();
-
-});
+};
