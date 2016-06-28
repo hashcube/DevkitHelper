@@ -1,8 +1,7 @@
-/* global device */
+/* global device, style */
 
 /* jshint ignore:start */
 import device;
-
 /* jshint ignore:end */
 
 exports = (function () {
@@ -10,8 +9,7 @@ exports = (function () {
 
   var device_width = device.screen.width,
     device_height = device.screen.height,
-    base_width, base_height, scale, scale_height,
-    style = {};
+    base_width, base_height, scale, scale_height;
 
   return {
 
@@ -20,13 +18,13 @@ exports = (function () {
         bound_height = opts.bound_height,
         orientation = opts.orientation;
 
-      style = JSON.parse(CACHE['resources/styles/' + orientation +
-        '.json']);
       if (orientation === 'portrait') {
+        jsio('import resources.styles.portrait as style');
         base_width = bound_width;
         base_height = device_height * (bound_width / device_width);
         scale = device_width / bound_width;
       } else {
+        jsio('import resources.styles.landscape as style');
         base_height = bound_height;
         base_width = device_width * (bound_height / device_height);
         scale = device_height / bound_height;
