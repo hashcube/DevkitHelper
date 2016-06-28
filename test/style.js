@@ -12,15 +12,16 @@ var prepare = function (orientation, tablet, phablet) {
     }
   };
 
-  CACHE = {
-    'resources/data/config.json': JSON.stringify({
-      orientation: orientation,
-      bound_width: 100,
-      lives: {},
-      bound_height: 100
-    })
-  };
-  CACHE['resources/styles/' + orientation + '.json'] = JSON.stringify({
+  device.screen.width = 500;
+  device.screen.height = 1000;
+  device.isTablet = tablet || false;
+  device.isPhablet = phablet || false;
+
+  util_test.removeFromJSIOCache('style.js');
+  jsio('import resources.styles.portrait as portrait');
+  jsio('import resources.styles.landscape as landscape');
+  jsio('import src.style as style');
+  util_test.getFromJSIOCache(orientation + '.js').exports = {
     key1: {
       prop: 'val'
     },
@@ -28,15 +29,8 @@ var prepare = function (orientation, tablet, phablet) {
       extend: 'key1',
       prop2: 'val2'
     }
-  });
+  };
 
-  util_test.removeFromJSIOCache('style.js');
-  device.screen.width = 500;
-  device.screen.height = 1000;
-  device.isTablet = tablet || false;
-  device.isPhablet = phablet || false;
-
-  jsio('import src.style as style');
   style.init({
     bound_width: 100,
     bound_height: 100,

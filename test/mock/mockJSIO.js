@@ -83,6 +83,10 @@ exports.setup = function () {
 
   jsio.path.add(path.join(jsio_path, 'packages'));
   jsio.path.add('.');
+  jsio.setCachedSrc(path.join(__dirname,'../../resources/styles/portrait.js'),
+     "exports = {};", true);
+  jsio.setCachedSrc(path.join(__dirname,'../../resources/styles/landscape.js'),
+     "exports = {};", true);
   scanModules();
 
   done = true;

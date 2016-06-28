@@ -19,6 +19,20 @@ exports = {
       }
     }
   },
+
+  getFromJSIOCache: function (file_name) {
+    'use strict';
+
+    var to_get,
+      cache_modules = global.jsio.__modules;
+
+    to_get = _.find(_.keys(cache_modules), function (key) {
+      return key.indexOf(file_name) !== -1;
+    });
+
+    return cache_modules[to_get];
+  },
+
   assertSignal: function (done, obj, signal, test, time) {
     /*Params
       done : done from mocha
