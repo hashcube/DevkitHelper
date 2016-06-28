@@ -87,9 +87,6 @@ exports.setup = function () {
      "exports = {};", true);
   jsio.setCachedSrc(path.join(__dirname,'../../resources/styles/landscape.js'),
      "exports = {};", true);
-  jsio.__modules['resources/styles/landscape.js'] = {
-    exports: {}
-  };
   scanModules();
 
   done = true;
