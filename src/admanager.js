@@ -132,11 +132,10 @@ exports = new (Class(Emitter, function () { // jshint ignore:line
     is_dismissed = false;
   };
 
-  this.showAd = function () {
+  this.showAd = function (spent_time, ad_freq_secs) {
 
     // assigning cached ad to chosen
-    if (chosen) {
-
+    if (chosen && spent_time > ad_freq_secs) {
       if (!_.isUndefined(ad_details[chosen])) {
         ad_details[chosen].obj.show();
       }
