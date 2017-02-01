@@ -27,10 +27,21 @@ describe('EventManager', function  () {
   });
 
   describe('emit', function () {
-    it('call the plugin function if registered', function (done) {
+    it('calls the plugin function if registered', function (done) {
       event_manager.register('test', ['test_sdk']);
-      test_sdk.transactionComplete = function () { done(); };
+      test_sdk.transactionComplete = function () {
+        done();
+        test_sdk.transactionComplete = false;
+      };
       event_manager.emit('transaction-complete', {cost: 100});
+    });
+  });
+
+  describe('logAllEvents', function () {
+    it('logAllEvents would get called for any event', function (done) {
+      event_manager.register('test', ['test_sdk']);
+      test_sdk.logAllEvents = function() { done(); };
+      event_manager.emit('transaction-complete', {data: 100});
     });
   });
 
