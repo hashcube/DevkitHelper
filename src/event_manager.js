@@ -25,10 +25,14 @@ exports = (function () {
 
   obj.emit = function (signal, data) {
     this.plugins.forEach(function (plugin) {
-      var fn = modules[plugin][toCamel(signal)];
+      var fn = modules[plugin][toCamel(signal)],
+        all_evt = modules[plugin].logAllEvents;
 
       if (typeof fn === 'function') {
         fn(data);
+      }
+      if(typeof all_evt === 'function') {
+        all_evt(signal, data);
       }
     });
   };
