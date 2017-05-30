@@ -15,6 +15,7 @@ import util.underscore as _;
 /* jshint ignore:end */
 
 var lang_data = {};
+var custom_language = '';
 
 exports = function (key, params, language) {
   'use strict';
@@ -22,7 +23,8 @@ exports = function (key, params, language) {
     nav_language = navigator.language || '',
     localize, pluralize, parser;
 
-  language = language || nav_language.split('-')[0] || 'en';
+  language = language || custom_language.split('-')[0] ||
+    nav_language.split('-')[0] || 'en';
 
   localize = function (key, params, language) {
     var store = lang_data[language],
@@ -93,4 +95,10 @@ exports = function (key, params, language) {
   };
 
   return pluralize(localize(key, params, language));
+};
+
+exports.setLanguage = function (lan) {
+  'use strict';
+
+  custom_language = lan || '';
 };
