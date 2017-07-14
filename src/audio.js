@@ -56,12 +56,7 @@ exports = (function () {
     pause: function (file) {
       sound.pause(file);
     },
-    setVolume:function(file,volume) {
-      sound.setVolume(file,volume);
-    },
-    getVolume:function(file) {
-      return sound.getVolume(file);
-    },
+
     stop: function (file) {
       sound.stop(file);
     },
