@@ -129,7 +129,7 @@ exports = Class(Emitter, function (supr) {
     var opts = this.opts,
       disable = opts.disable || false,
       length = tutorials.length,
-      head, id, pos, view, completed, before;
+      head, id, pos, view, completed, before, custom;
 
     if (currentHead === 0 || forceStart) {
       if (opts.start) {
@@ -176,6 +176,7 @@ exports = Class(Emitter, function (supr) {
     head = tutorials[currentHead++];
     id = head.id;
     pos = opts.positions[id];
+    custom = pos.custom || {};
     before = pos.before;
     view = this.views[pos.view.index || 0].build(pos.view.params);
     view.once('next', bind(this, this.show));
@@ -238,7 +239,8 @@ exports = Class(Emitter, function (supr) {
           text: head.text,
           action: action,
           next: currentHead < length && !head.hideNext,
-          ok: !!head.ok
+          ok: !!head.ok,
+          custom: custom
         }, head), head.timeout);
         if (!head.always_show) {
           this.setCompleted(opts.type, id,
