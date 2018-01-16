@@ -85,7 +85,6 @@ exports = Class(Emitter, function (supr) {
           opts.on_cancel(cb);
         }));
       }
-
       timeout = pos.view.timeout;
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         _.isNumber(timeout) ? timeout : 1000);
@@ -155,6 +154,10 @@ exports = Class(Emitter, function (supr) {
           if (completed && opts.on_cancel) {
             history.pop();
             delete opts.on_cancel;
+          }
+
+          if (completed && opts.on_resume) {
+            delete opts.on_resume;
           }
 
           if (head.cb) {
@@ -321,6 +324,10 @@ exports = Class(Emitter, function (supr) {
 
     if (opts.on_cancel) {
       history.add(opts.on_cancel);
+    }
+
+    if (opts.on_resume) {
+      opts.on_resume();
     }
   };
 
