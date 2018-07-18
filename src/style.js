@@ -32,6 +32,9 @@ exports = (function () {
       this.base_height = base_height;
       this.base_width = base_width;
       this.scale = scale;
+      if (opts.force_tablet) {
+        device.isTablet = true;
+      }
       this.tablet_scale = device.isTablet ? opts.tablet :
         device.isPhablet ? opts.phablet : 1;
       this.scale_height = scale_height = base_height / bound_height;
