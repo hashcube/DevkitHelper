@@ -24,6 +24,7 @@ exports = Class(Emitter, function (supr) {
     tutorials = 0,
     storageID = 'tutorials',
     cancel = false,
+    on_focus = false,
     getGroupId = function (data, tut_id) {
       return _.find(data, function (tut_obj) {
           return tut_obj.id === tut_id;
@@ -47,6 +48,7 @@ exports = Class(Emitter, function (supr) {
     var view = opts.view,
       type = opts.type;
 
+    on_focus = false;
     currentHead = 0;
     cancel = false;
     this.opts = opts;
@@ -85,7 +87,6 @@ exports = Class(Emitter, function (supr) {
           opts.on_cancel(cb);
         }));
       }
-
       timeout = pos.view.timeout;
       this.timeoutID = setTimeout(bind(this, this.launch, forceStart),
         _.isNumber(timeout) ? timeout : 1000);
@@ -157,6 +158,10 @@ exports = Class(Emitter, function (supr) {
             delete opts.on_cancel;
           }
 
+          if (completed && opts.on_resume) {
+            delete opts.on_resume;
+          }
+
           if (head.cb) {
             head.cb();
           }
@@ -169,6 +174,7 @@ exports = Class(Emitter, function (supr) {
       }
 
       if (completed) {
+        on_focus = false;
         return;
       }
     }
@@ -229,6 +235,7 @@ exports = Class(Emitter, function (supr) {
           before();
         }
 
+        on_focus = true;
         view.show(merge({
           superview: opts.superview,
           x: x || 0,
@@ -319,8 +326,16 @@ exports = Class(Emitter, function (supr) {
 
     this.emit('resume');
 
+    if (!on_focus) {
+      return;
+    }
+
     if (opts.on_cancel) {
       history.add(opts.on_cancel);
+    }
+
+    if (opts.on_resume) {
+      opts.on_resume();
     }
   };
 
