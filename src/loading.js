@@ -76,6 +76,10 @@ exports = new (Class(Emitter, function () { // jshint ignore:line
     }
   };
 
+  this.update = function (cache) {
+    folders = cache;
+  };
+
   // No need to call this, unless you want to hide manually.
   this.hide = function () {
     // if images are still loading, call this function again
