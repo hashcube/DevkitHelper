@@ -11,8 +11,8 @@ exports = function (callback) {
 
   var cbs = [],
     sites = [
-      ['http://ip-api.com/json', 'countryCode'],
-      ['http://freegeoip.net/json/','country_code']
+      ['https://ipapi.co/json/', 'country'],
+      ['http://ip-api.com/json', 'countryCode']
     ],
 
     request = function (url, key, next) {
