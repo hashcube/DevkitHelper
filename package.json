@@ -1,6 +1,6 @@
 {
   "name": "devkithelper",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "devkit": {
     "clientPaths": {
       "DevkitHelper": "src"
