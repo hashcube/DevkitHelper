@@ -1,13 +1,13 @@
 {
   "name": "devkithelper",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "devkit": {
     "clientPaths": {
       "DevkitHelper": "src"
     }
   },
   "devDependencies": {
-    "jsdom": "^3.1.2",
+    "jsdom": "^15.1.0",
     "jsio": "^2.0.2",
     "mocha": "^2.2.1"
   }
