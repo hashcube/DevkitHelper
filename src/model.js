@@ -99,7 +99,7 @@ exports = Class(Emitter, function (supr) {
     try {
       data = JSON.parse(localStorage.getItem(id));
     } catch (e) {
-      return;
+      return this;
     }
     this.set(data, silent);
     return this;
