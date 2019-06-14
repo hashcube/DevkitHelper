@@ -85,7 +85,7 @@ exports = new (Class(Emitter, function () { // jshint ignore:line
     // if images are still loading, call this function again
     if (loading === true) {
       log('flag is ' + loading);
-      setTimeout(this.hide, 1);
+      window.setTimeout(this.hide, 1);
       return;
     }
     log('flag is ' + loading);
